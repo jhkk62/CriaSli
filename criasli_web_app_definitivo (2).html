@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRIASLI - Criador de Slides</title>
+    
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+            --header-bg: rgba(255, 255, 255, 0.85);
+            --chat-bg: rgba(255, 255, 255, 0.9);
+            --border-color: #ccc;
+            --msg-user-bg: #d1e7dd;
+            --msg-ai-bg: #f8d7da;
+            --input-bg: #fafafa;
+            --text-muted: #555;
+        }
+
+        body.dark-mode {
+            --bg-color: #1a1a2e;
+            --text-color: #e0e0e0;
+            --header-bg: rgba(22, 33, 62, 0.9);
+            --chat-bg: rgba(15, 52, 96, 0.85);
+            --border-color: #444;
+            --msg-user-bg: #2d4059;
+            --msg-ai-bg: #4a1c40;
+            --input-bg: #112d4e;
+            --text-muted: #aaa;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        body { 
+            background-color: var(--bg-color); 
+            color: var(--text-color);
+            display: flex; flex-direction: column; height: 100vh; 
+            transition: background 0.5s ease, color 0.5s ease;
+            background: linear-gradient(-45deg, #a1c4fd, #e0c3fc, #a1c4fd, #e0c3fc);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        header { 
+            background: var(--header-bg); backdrop-filter: blur(10px);
+            padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid var(--border-color); box-shadow: 0 4px 15px rgba(0,0,0,0.05); z-index: 10;
+        }
+
+        .logo { font-size: 26px; font-weight: 900; color: var(--text-color); display: flex; align-items: center; gap: 10px; letter-spacing: 1px;}
+        .nav-links { display: flex; gap: 15px; align-items: center; flex-wrap: wrap;}
+        .nav-link { font-size: 14px; font-weight: bold; color: var(--text-muted); cursor: pointer; transition: color 0.3s; }
+        .nav-link:hover { color: #0d6efd; text-decoration: none; }
+        .btn-config { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-muted); transition: transform 0.3s; }
+        .btn-config:hover { transform: rotate(90deg); color: #0d6efd; }
+
+        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 20px; overflow: hidden; }
+        
+        .chat-container { 
+            width: 100%; max-width: 900px; height: 90%; 
+            background: var(--chat-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--border-color); border-radius: 16px; 
+            display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden;
+        }
+
+        .chat-messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
+        .message { max-width: 85%; padding: 14px 18px; border-radius: 12px; line-height: 1.5; font-size: 15px; position: relative; word-wrap: break-word;}
+        .message.user { background-color: var(--msg-user-bg); align-self: flex-end; border-bottom-right-radius: 2px; color: var(--text-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
+        .message.ai { background-color: var(--msg-ai-bg); align-self: flex-start; border-bottom-left-radius: 2px; color: var(--text-color); box-shadow: 0 2px 5px rgba(0,0,0,0.05);}
+        
+        .chat-input-area { display: flex; padding: 15px 20px; background-color: var(--input-bg); border-top: 1px solid var(--border-color); align-items: center; gap: 12px; flex-wrap: wrap;}
+        .btn-add { background: none; border: none; font-size: 26px; cursor: pointer; color: var(--text-muted); transition: transform 0.2s; }
+        .btn-add:hover { transform: scale(1.1); color: #0d6efd; }
+        
+        #ai-selector { padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--chat-bg); color: var(--text-color); outline: none; cursor: pointer; font-weight: bold;}
+        .chat-input-area input { flex: 1; min-width: 200px; padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 25px; font-size: 15px; background: var(--chat-bg); color: var(--text-color); outline: none; transition: border 0.3s, box-shadow 0.3s; }
+        .chat-input-area input:focus { border-color: #0d6efd; box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2); }
+        
+        .btn-send { background-color: #0d6efd; color: #fff; border: none; padding: 12px 24px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: background 0.3s, transform 0.2s; }
+        .btn-send:hover { background-color: #0b5ed7; transform: translateY(-2px); }
+        .btn-clear { background-color: #dc3545; color: #fff; border: none; padding: 12px 15px; border-radius: 25px; cursor: pointer; font-weight: bold; transition: background 0.3s; }
+        .btn-clear:hover { background-color: #c82333; }
+        
+        .btn-present { display: inline-block; cursor: pointer; border: none; margin-top: 15px; padding: 12px 20px; background-color: #198754; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: background 0.3s, transform 0.2s; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .btn-present:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 100; opacity: 0; transition: opacity 0.3s; }
+        .modal-overlay.active { display: flex; opacity: 1; }
+        .modal-content { background: var(--chat-bg); color: var(--text-color); width: 90%; max-width: 500px; padding: 30px; border-radius: 16px; box-shadow: 0 15px 40px rgba(0,0,0,0.2); position: relative; border: 1px solid var(--border-color); transform: translateY(20px); transition: transform 0.3s; max-height: 90vh; overflow-y: auto;}
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: var(--text-muted); transition: color 0.3s; }
+        .modal-close:hover { color: #dc3545; }
+        .modal-title { font-size: 20px; margin-bottom: 20px; color: var(--text-color); font-weight: 800; border-bottom: 2px solid var(--border-color); padding-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 13px; font-weight: bold; color: var(--text-muted); }
+        .form-group input[type="text"], .form-group input[type="password"], .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--input-bg); color: var(--text-color); outline: none; }
+        .btn-save { width: 100%; padding: 12px; background: #0d6efd; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; transition: background 0.3s; }
+        .btn-save:hover { background: #0b5ed7; }
+
+        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 26px; }
+        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #0d6efd; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        .feedback-list { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 15px;}
+        .feedback-item { background: var(--input-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 13px;}
+        
+        .style-card { padding: 15px; border: 2px solid var(--border-color); border-radius: 8px; cursor: pointer; margin-bottom: 10px; font-weight: bold; text-align: center; transition: all 0.2s; background: var(--input-bg); color: var(--text-color); }
+        .style-card:hover { border-color: #0d6efd; background: rgba(13, 110, 253, 0.1); }
+        .style-card.selected { border-color: #0d6efd; background: #0d6efd; color: white; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span style="font-size: 30px;">💻</span> CRIASLI!
+        </div>
+        <div class="nav-links">
+            <span class="nav-link" onclick="window.openModal('modal-feedback')">FEEDBACK</span>
+            <span class="nav-link" onclick="window.openModal('modal-creditos')">CRÉDITOS</span>
+            <span class="nav-link" onclick="window.openModal('modal-admin')">ADMIN</span>
+            <button class="btn-config" onclick="window.openModal('modal-config')" title="Configurações">⚙️</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <div class="message ai">
+                    Olá! Bem-vindo ao CRIASLI completo. Diga o assunto que o seu slide precisaria. <br><br>
+                    <em>Dica: Use o botão ⊞ ao lado para escolher o Centro de Estilos antes de enviar!</em>
+                </div>
+            </div>
+            
+            <div class="chat-input-area">
+                <button class="btn-add" title="Centro de Estilos" onclick="window.openModal('modal-estilos')">⊞</button>
+                <select id="ai-selector">
+                    <option value="groq">Groq (Llama 3.3) - 100% Gratuita</option>
+                    <option value="chatgpt">ChatGPT (GPT-4o)</option>
+                    <option value="gemini">Gemini (2.0 Flash)</option>
+                </select>
+                <input type="text" id="user-input" placeholder="Ex: Faça um slide sobre a Guerra Fria..." autocomplete="off">
+                <button class="btn-send" onclick="window.sendMessage()" id="btn-enviar">Enviar</button>
+                <button class="btn-clear" onclick="window.clearMemory()" title="Começar novo slide do zero">🗑️</button>
+            </div>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="modal-config">
+        <div class="modal-content">
+            <span class="modal-close" onclick="window.closeModal('modal-config')">×</span>
+            <h2 class="modal-title">Configurações do Sistema</h2>
+            
+            <div class="form-group" style="display: flex; justify-content: space-between; align-items: center;">
+                <label style="margin: 0;">Tema Escuro (Dark Mode)</label>
+                <label class="switch">
+                    <input type="checkbox" id="toggle-dark">
+                    <span class="slider"></span>
+                </label>
+            </div>
+
+            <div class="form-group">
+                <label>Cor de Fundo (Modo Claro):</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="color" id="bg-color-1" value="#a1c4fd" style="width: 100%; height: 35px; cursor: pointer; border: none; border-radius: 4px;">
+                    <input type="color" id="bg-color-2" value="#e0c3fc" style="width: 100%; height: 35px; cursor: pointer; border: none; border-radius: 4px;">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Cor de Fundo (Modo Escuro):</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="color" id="bg-color-dark-1" value="#1a1a2e" style="width: 100%; height: 35px; cursor: pointer; border: none; border-radius: 4px;">
+                    <input type="color" id="bg-color-dark-2" value="#16213e" style="width: 100%; height: 35px; cursor: pointer; border: none; border-radius: 4px;">
+                </div>
+            </div>
+            
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px; margin-top: 20px;">Cole suas próprias chaves de API abaixo para evitar limites.</p>
+            
+            <div class="form-group"><label>API Key - Groq:</label><input type="password" id="key-groq" placeholder="gsk_..."></div>
+            <div class="form-group"><label>API Key - ChatGPT:</label><input type="password" id="key-chatgpt" placeholder="sk-..."></div>
+            <div class="form-group"><label>API Key - Gemini:</label><input type="password" id="key-gemini" placeholder="AIzaSy..."></div>
+            
+            <button class="btn-save" onclick="window.saveConfig()">Salvar Configurações</button>
+            <p id="config-status" style="display: none; color: #198754; font-size: 12px; margin-top: 10px; text-align: center;">Salvo com sucesso!</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-creditos">
+        <div class="modal-content" style="text-align: center;">
+            <span class="modal-close" onclick="window.closeModal('modal-creditos')">×</span>
+            <h2 class="modal-title">Créditos de Desenvolvimento</h2>
+            <div style="font-size: 16px; line-height: 1.8; color: var(--text-color);">
+                <p><strong>Turma:</strong> 9º ano B</p><br>
+                <p>Artur Silva</p><p>João Helder</p><p>Marcelo</p><p>Pedro Miranda</p><p>Rafael Reis</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-feedback">
+        <div class="modal-content">
+            <span class="modal-close" onclick="window.closeModal('modal-feedback')">×</span>
+            <h2 class="modal-title">Deixe seu Feedback</h2>
+            <div class="form-group"><label>Seu Nome:</label><input type="text" id="fb-nome" placeholder="Ex: Maria"></div>
+            <div class="form-group"><label>Sua Mensagem / Sugestão:</label><textarea id="fb-msg" rows="4" placeholder="O que você achou do CRIASLI?"></textarea></div>
+            <button class="btn-save" onclick="window.enviarFeedback()">Enviar Feedback</button>
+            <p id="fb-status" style="display: none; color: #198754; font-size: 12px; margin-top: 10px; text-align: center;">Enviado com sucesso!</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-admin">
+        <div class="modal-content">
+            <span class="modal-close" onclick="window.closeModal('modal-admin')">×</span>
+            <h2 class="modal-title">Painel Administrativo</h2>
+            <div id="admin-login-area">
+                <div class="form-group"><label>Senha de Acesso:</label><input type="password" id="admin-senha" placeholder="Digite a senha (6234)"></div>
+                <button class="btn-save" onclick="window.acessarAdmin()">Entrar</button>
+                <p id="admin-error" style="display: none; color: #dc3545; font-size: 12px; margin-top: 10px; text-align: center;">Senha Incorreta!</p>
+            </div>
+            <div id="admin-panel-area" style="display: none;">
+                <p style="font-size: 14px; font-weight: bold; color: var(--text-color);">Feedbacks na Nuvem:</p>
+                <div class="feedback-list" id="lista-feedbacks"></div>
+                <button class="btn-save" style="background: #dc3545; margin-top: 15px;" onclick="window.limparFeedbacks()">Limpar Todos os Feedbacks</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-estilos">
+        <div class="modal-content">
+            <span class="modal-close" onclick="window.closeModal('modal-estilos')">×</span>
+            <h2 class="modal-title">Centro de Estilos</h2>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Escolha a "vibe" do seu slide. A IA vai adaptar as cores e fontes de acordo com a sua escolha.</p>
+            
+            <div class="style-card selected" id="style-Padrao" onclick="window.setStyle('Padrão')">Padrão / Clean</div>
+            <div class="style-card" id="style-Minimalista" onclick="window.setStyle('Minimalista')">Minimalista (Branco, simples, muito espaço)</div>
+            <div class="style-card" id="style-Academico" onclick="window.setStyle('Acadêmico')">Acadêmico (Sério, cores sóbrias, fontes clássicas)</div>
+            <div class="style-card" id="style-Impactante" onclick="window.setStyle('Impactante')">Impactante (Cores vibrantes, letras gigantes)</div>
+            <div class="style-card" id="style-Sombrio" onclick="window.setStyle('Sombrio')">Sombrio (Escuro, tons de cinza/vermelho/roxo escuro)</div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-preview" style="z-index: 9999;">
+        <div style="width: 100%; height: 100%; background: white; position: relative;">
+            <div style="position: absolute; top: 15px; left: 20px; z-index: 10000; display: flex; gap: 10px;">
+                <button onclick="window.closeModal('modal-preview')" style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: background 0.3s;">⬅ Voltar</button>
+                <button onclick="window.salvarPDF()" style="padding: 10px 20px; background: #0d6efd; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: background 0.3s;">📄 Salvar PDF / Imprimir</button>
+            </div>
+            <iframe id="preview-frame" style="width: 100%; height: 100%; border: none;"></iframe>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let db;
+        let auth;
+        let currentUser = null;
+        let appId = 'criasli-app'; 
+        let isFirebaseReady = false;
+
+        window.selectedStyle = "Padrão";
+        window.lastGeneratedCode = "";
+        window.currentSlideUrl = "";
+
+        // Tenta iniciar a nuvem (Firebase)
+        try {
+            appId = typeof __app_id !== 'undefined' ? __app_id : 'criasli-app-local';
+            const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+            
+            if (firebaseConfig) {
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                const authPromise = (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) 
+                    ? signInWithCustomToken(auth, __initial_auth_token) 
+                    : signInAnonymously(auth);
+
+                authPromise.then(async (userCredential) => {
+                    currentUser = userCredential.user;
+                    isFirebaseReady = true;
+
+                    // VERIFICA SE ALGUÉM ABRIU UM LINK COMPARTILHADO
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const viewId = urlParams.get('view');
+                    
+                    if (viewId) {
+                        document.body.innerHTML = `<div style="display:flex; height:100vh; align-items:center; justify-content:center; flex-direction:column; background:#1a1a2e; color: white; font-family: sans-serif;">
+                            <h2 style="margin-bottom:10px;">Baixando Apresentação da Nuvem... ⏳</h2>
+                            <p style="color:#aaa;">CRIASLI Viewer</p>
+                        </div>`;
+                        try {
+                            const docSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'slides_compartilhados', viewId));
+                            if (docSnap.exists()) {
+                                const htmlContent = docSnap.data().html;
+                                document.open();
+                                document.write(htmlContent);
+                                document.close();
+                            } else {
+                                document.body.innerHTML = `<div style="display:flex; height:100vh; align-items:center; justify-content:center; background:#1a1a2e; color: white; font-family: sans-serif;">
+                                    <h2>❌ O link deste slide expirou ou não existe.</h2>
+                                </div>`;
+                            }
+                        } catch (e) {
+                            document.body.innerHTML = `<h2 style="color:white; text-align:center; padding:50px;">Erro de conexão ao baixar o slide.</h2>`;
+                        }
+                    }
+                }).catch(e => console.error("Erro na autenticação", e));
+            }
+        } catch (e) {
+            console.error("Modo offline ativo", e);
+        }
+
+        const DEFAULT_KEYS = {
+            groq: "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",
+            chatgpt: "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",
+            gemini: "" 
+        };
+
+        function aplicarCoresDeFundo(isDark, c1, c2, d1, d2) {
+            if(isDark) {
+                document.body.classList.add('dark-mode');
+                document.body.style.background = `linear-gradient(-45deg, ${d1}, ${d2}, ${d1}, ${d2})`;
+                document.body.style.backgroundSize = "400% 400%";
+                document.body.style.animation = "gradientBG 15s ease infinite";
+            } else {
+                document.body.classList.remove('dark-mode');
+                document.body.style.background = `linear-gradient(-45deg, ${c1}, ${c2}, ${c1}, ${c2})`;
+                document.body.style.backgroundSize = "400% 400%";
+                document.body.style.animation = "gradientBG 15s ease infinite";
+            }
+        }
+
+        document.getElementById('key-groq').value = localStorage.getItem('api_groq') || DEFAULT_KEYS.groq;
+        document.getElementById('key-chatgpt').value = localStorage.getItem('api_chatgpt') || DEFAULT_KEYS.chatgpt;
+        document.getElementById('key-gemini').value = localStorage.getItem('api_gemini') || DEFAULT_KEYS.gemini;
+        
+        const isDark = localStorage.getItem('dark_mode') === 'true';
+        document.getElementById('toggle-dark').checked = isDark;
+
+        const c1 = localStorage.getItem('bg_color_1') || "#a1c4fd";
+        const c2 = localStorage.getItem('bg_color_2') || "#e0c3fc";
+        const d1 = localStorage.getItem('bg_color_dark_1') || "#1a1a2e";
+        const d2 = localStorage.getItem('bg_color_dark_2') || "#16213e";
+        
+        document.getElementById('bg-color-1').value = c1;
+        document.getElementById('bg-color-2').value = c2;
+        document.getElementById('bg-color-dark-1').value = d1;
+        document.getElementById('bg-color-dark-2').value = d2;
+
+        aplicarCoresDeFundo(isDark, c1, c2, d1, d2);
+
+        window.saveConfig = function() {
+            localStorage.setItem('api_groq', document.getElementById('key-groq').value.trim());
+            localStorage.setItem('api_chatgpt', document.getElementById('key-chatgpt').value.trim());
+            localStorage.setItem('api_gemini', document.getElementById('key-gemini').value.trim());
+            
+            const isDark = document.getElementById('toggle-dark').checked;
+            localStorage.setItem('dark_mode', isDark);
+            
+            const cl1 = document.getElementById('bg-color-1').value;
+            const cl2 = document.getElementById('bg-color-2').value;
+            const dk1 = document.getElementById('bg-color-dark-1').value;
+            const dk2 = document.getElementById('bg-color-dark-2').value;
+            
+            localStorage.setItem('bg_color_1', cl1);
+            localStorage.setItem('bg_color_2', cl2);
+            localStorage.setItem('bg_color_dark_1', dk1);
+            localStorage.setItem('bg_color_dark_2', dk2);
+            
+            aplicarCoresDeFundo(isDark, cl1, cl2, dk1, dk2);
+
+            const status = document.getElementById('config-status');
+            status.style.display = 'block';
+            setTimeout(() => { status.style.display = 'none'; window.closeModal('modal-config'); }, 1500);
+        }
+
+        window.openModal = function(id) { document.getElementById(id).classList.add('active'); }
+        window.closeModal = function(id) { document.getElementById(id).classList.remove('active'); }
+
+        window.setStyle = function(styleName) {
+            window.selectedStyle = styleName;
+            
+            // Remove seleção de todos
+            document.querySelectorAll('.style-card').forEach(el => el.classList.remove('selected'));
+            
+            // Adiciona seleção no clicado (trata espaços/acentos pro ID)
+            const idMap = {"Padrão": "Padrao", "Acadêmico": "Academico"};
+            const safeId = "style-" + (idMap[styleName] || styleName);
+            const el = document.getElementById(safeId);
+            if(el) el.classList.add('selected');
+
+            addMessage(`🎨 Estilo visual definido para: <strong>${styleName}</strong>. O próximo slide usará esse padrão!`, "ai");
+            window.closeModal('modal-estilos');
+        }
+
+        window.enviarFeedback = async function() {
+            const nome = document.getElementById('fb-nome').value.trim() || "Anônimo";
+            const msg = document.getElementById('fb-msg').value.trim();
+            if(!msg) return;
+
+            if (isFirebaseReady && currentUser) {
+                try {
+                    await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'feedbacks'), {
+                        nome: nome,
+                        mensagem: msg,
+                        data: new Date().toLocaleString('pt-BR')
+                    });
+                } catch(e) { console.error("Erro ao salvar no banco", e); }
+            } else {
+                let feedbacks = JSON.parse(localStorage.getItem('criasli_feedbacks')) || [];
+                feedbacks.push({ nome: nome, mensagem: msg, data: new Date().toLocaleString('pt-BR') });
+                localStorage.setItem('criasli_feedbacks', JSON.stringify(feedbacks));
+            }
+
+            document.getElementById('fb-nome').value = "";
+            document.getElementById('fb-msg').value = "";
+            
+            const status = document.getElementById('fb-status');
+            status.style.display = 'block';
+            setTimeout(() => { status.style.display = 'none'; window.closeModal('modal-feedback'); }, 1500);
+        }
+
+        window.acessarAdmin = function() {
+            const senha = document.getElementById('admin-senha').value;
+            if(senha === "6234") {
+                document.getElementById('admin-login-area').style.display = 'none';
+                document.getElementById('admin-panel-area').style.display = 'block';
+                document.getElementById('admin-error').style.display = 'none';
+                carregarFeedbacksAdmin();
+            } else {
+                document.getElementById('admin-error').style.display = 'block';
+            }
+        }
+
+        async function carregarFeedbacksAdmin() {
+            const lista = document.getElementById('lista-feedbacks');
+            lista.innerHTML = "<p>Carregando dados da nuvem...</p>";
+            let feedbacks = [];
+
+            if (isFirebaseReady && currentUser) {
+                const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'feedbacks'));
+                querySnapshot.forEach((doc) => {
+                    feedbacks.push({ id: doc.id, ...doc.data() });
+                });
+            } else {
+                feedbacks = JSON.parse(localStorage.getItem('criasli_feedbacks')) || [];
+            }
+            
+            lista.innerHTML = "";
+            if(feedbacks.length === 0) {
+                lista.innerHTML = "<p style='color: var(--text-muted); font-size: 12px;'>Nenhum feedback recebido ainda.</p>";
+                return;
+            }
+
+            feedbacks.forEach(fb => {
+                const div = document.createElement('div');
+                div.className = 'feedback-item';
+                const header = document.createElement('div');
+                header.innerHTML = `<strong style="color: #0d6efd;">${fb.nome}</strong> <span style="font-size: 10px; color: gray;">(${fb.data})</span>`;
+                const p = document.createElement('p');
+                p.style.cssText = "margin-top: 5px; color: var(--text-color); word-break: break-all;";
+                p.textContent = fb.mensagem;
+                div.appendChild(header);
+                div.appendChild(p);
+                lista.appendChild(div);
+            });
+        }
+
+        window.limparFeedbacks = async function() {
+            if (isFirebaseReady && currentUser) {
+                const querySnapshot = await getDocs(collection(db, 'artifacts', appId, 'public', 'data', 'feedbacks'));
+                querySnapshot.forEach(async (d) => {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'feedbacks', d.id));
+                });
+            }
+            localStorage.removeItem('criasli_feedbacks');
+            setTimeout(carregarFeedbacksAdmin, 1000);
+        }
+
+        window.abrirPreview = function() {
+            const frame = document.getElementById('preview-frame');
+            frame.srcdoc = window.lastGeneratedCode;
+            window.openModal('modal-preview');
+        }
+
+        window.salvarPDF = function() {
+            const frame = document.getElementById('preview-frame');
+            if (frame.contentWindow) {
+                frame.contentWindow.focus();
+                frame.contentWindow.print();
+            } else {
+                addMessage("Erro: A prévia precisa estar aberta e carregada para imprimir.", "ai");
+            }
+        }
+
+        window.clearMemory = function() {
+            window.lastGeneratedCode = "";
+            addMessage("Lixeira esvaziada! A próxima mensagem criará um slide totalmente novo do zero.", "ai");
+        }
+
+        function addMessage(text, sender, id = null) {
+            const chat = document.getElementById("chat-messages");
+            const div = document.createElement("div");
+            div.className = `message ${sender}`;
+            if(id) div.id = id;
+            div.innerHTML = text; 
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        window.sendMessage = async function() {
+            const input = document.getElementById("user-input");
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, "user");
+            input.value = "";
+
+            const btn = document.getElementById("btn-enviar");
+            btn.disabled = true; btn.innerText = "...";
+
+            const loadingId = "msg-" + Date.now();
+            if (window.lastGeneratedCode !== "") {
+                addMessage("Modificando os slides atuais na memória... ⏳", "ai", loadingId);
+            } else {
+                addMessage(`Desenhando slides (Estilo: ${window.selectedStyle})... ⏳`, "ai", loadingId);
+            }
+
+            try {
+                const ai = document.getElementById("ai-selector").value;
+                const KEY_GROQ = localStorage.getItem('api_groq') || DEFAULT_KEYS.groq;
+                const KEY_CHATGPT = localStorage.getItem('api_chatgpt') || DEFAULT_KEYS.chatgpt;
+                const KEY_GEMini = localStorage.getItem('api_gemini') || DEFAULT_KEYS.gemini;
+
+                let instrucoesDeEstilo = "";
+                if (window.selectedStyle === "Minimalista") instrucoesDeEstilo = "ESTILO OBRIGATÓRIO: MINIMALISTA. Fundo da tela claro e limpo. As caixas flutuantes devem ser brancas com sombras ultra suaves (box-shadow: 0 4px 20px rgba(0,0,0,0.04)). Fontes sem serifa. Muito padding e respiro.";
+                else if (window.selectedStyle === "Acadêmico") instrucoesDeEstilo = "ESTILO OBRIGATÓRIO: ACADÊMICO. Fundo da tela em tons pastéis ou com imagem escurecida. As caixas flutuantes devem ser cor creme (#fdfbf7) ou brancas com bordas finas e elegantes. Use fontes com serifa (Georgia). Layout formal.";
+                else if (window.selectedStyle === "Impactante") instrucoesDeEstilo = "ESTILO OBRIGATÓRIO: IMPACTANTE. Fundo da tela muito escuro. Caixas flutuantes pretas ou translúcidas com bordas coloridas neon. Textos com cores super vibrantes e títulos gigantes em negrito (font-weight: 900).";
+                else if (window.selectedStyle === "Sombrio") instrucoesDeEstilo = "ESTILO OBRIGATÓRIO: SOMBRIO. Fundo da tela preto ou com imagem de terror. Caixas flutuantes pretas ou cinza escuro com leve transparência, usando bordas ou sombras vermelhas/roxas escuras. Texto cinza ou vermelho. Visual de suspense.";
+                else instrucoesDeEstilo = "ESTILO OBRIGATÓRIO: PADRÃO. Design moderno e tecnológico. Caixas flutuantes brancas com cantos arredondados e efeito glassmorphism (backdrop-filter: blur) sobre fundos ou imagens vibrantes.";
+
+                // INSTRUÇÕES DA IA (O ESTILO ESCOLHIDO ENTRA AQUI)
+                const prompt = `Você é um desenvolvedor Front-End Sênior e Web Designer.
+REGRAS INQUEBRÁVEIS:
+1. Retorne EXCLUSIVAMENTE código HTML começando com <!DOCTYPE html>. Sem markdown, sem conversas.
+2. Adicione <meta charset="UTF-8">.
+3. TODO o CSS deve estar na tag <style>. ${instrucoesDeEstilo}
+4. Crie NO MÍNIMO 4 slides (seções completas com min-height: 100vh e flexbox para centralizar).
+5. DESIGN PROFISSIONAL OBRIGATÓRIO: NUNCA jogue o texto solto sobre o fundo! TODO o conteúdo de texto de CADA SLIDE deve estar dentro de uma linda 'caixa flutuante' (card/container). Essa caixa deve ter um background (com cor sólida ou leve opacidade rgba), padding generoso, border-radius e um box-shadow elegante para destacar as informações de forma profissional.
+6. NUNCA gere PowerPoint (.pptx).
+7. IMAGENS OBRIGATÓRIAS: Use EXATAMENTE a tag <img src="https://image.pollinations.ai/prompt/palavra?width=800&height=400&nologo=true"> substituindo "palavra" por um termo curto em inglês. Arredonde as bordas das imagens no CSS.`;
+
+                const finalPrompt = window.lastGeneratedCode !== "" 
+                    ? `REGRA VITAL: NÃO APAGUE SLIDES ANTERIORES. MANTENHA O CONTEÚDO BASE!\n[CÓDIGO ATUAL]\n${window.lastGeneratedCode}\n\nALTERAÇÃO PEDIDA: "${text}".\nRetorne TODO o código HTML atualizado com o design intacto.`
+                    : `CRIE UMA APRESENTAÇÃO COMPLETA E BONITA (Mínimo de 4 slides). ASSUNTO: "${text}"`;
+
+                let code = "";
+
+                if (ai === "groq") {
+                    const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                        method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${KEY_GROQ}` },
+                        body: JSON.stringify({ model: "llama-3.3-70b-versatile", messages: [{ role: "system", content: prompt }, { role: "user", content: finalPrompt }] })
+                    });
+                    const data = await res.json();
+                    if(data.error) throw new Error(data.error.message);
+                    code = data.choices[0].message.content;
+                } 
+                else if (ai === "chatgpt") {
+                    const res = await fetch("https://api.openai.com/v1/chat/completions", {
+                        method: "POST", headers: { "Content-Type": "application/json", "Authorization": `Bearer ${KEY_CHATGPT}` },
+                        body: JSON.stringify({ model: "gpt-4o", messages: [{ role: "system", content: prompt }, { role: "user", content: finalPrompt }] })
+                    });
+                    const data = await res.json();
+                    if(data.error) throw new Error(data.error.message);
+                    code = data.choices[0].message.content;
+                }
+                else if (ai === "gemini") {
+                    if(!KEY_GEMini) throw new Error("Chave do Gemini ausente. Vá em configurações (⚙️) e cole uma chave válida.");
+                    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${KEY_GEMini}`, {
+                        method: "POST", headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ contents: [{ parts: [{ text: prompt + "\n\n" + finalPrompt }] }] })
+                    });
+                    const data = await res.json();
+                    if(data.error) throw new Error(data.error.message);
+                    code = data.candidates[0].content.parts[0].text;
+                }
+
+                // Limpeza segura sem quebrar o CSS
+                code = code.replace(/```html/gi, "").replace(/```/g, "").trim();
+                window.lastGeneratedCode = code; 
+                
+                const blob = new Blob([code], { type: "text/html;charset=utf-8" });
+                window.currentSlideUrl = URL.createObjectURL(blob);
+                
+                const loadingMsg = document.getElementById(loadingId);
+                loadingMsg.innerHTML = `✅ Slides gerados com sucesso!<br>
+                <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                    <button class="btn-present" style="background-color: #6c757d; margin-top: 0;" onclick="window.abrirPreview()">🔍 Prévia / PDF</button>
+                    <a href="${window.currentSlideUrl}" target="_blank" class="btn-present" style="margin-top: 0; text-decoration: none;">🚀 Apresentar Tela Cheia</a>
+                    <button class="btn-present" style="background-color: #0dcaf0; color: black; margin-top: 0;" onclick="window.compartilharSlide()">🔗 Gerar Link Público</button>
+                </div>`;
+
+            } catch (error) {
+                console.error(error);
+                let erroTraduzido = "Ocorreu um erro desconhecido.";
+                if(error.message.includes("quota") || error.message.includes("429")) {
+                    erroTraduzido = "A cota gratuita desta IA acabou. Selecione outra.";
+                } else if(error.message.includes("API key not valid") || error.message.includes("key")) {
+                    erroTraduzido = "Chave de API inválida nas configurações.";
+                } else {
+                    erroTraduzido = error.message;
+                }
+                document.getElementById(loadingId).innerHTML = `❌ Ops! Houve um erro:<br><span style="font-size:12px; color:var(--text-muted);">${erroTraduzido}</span>`;
+            }
+
+            btn.disabled = false; btn.innerText = "Enviar";
+        };
+
+        document.getElementById("user-input").addEventListener("keypress", function(e) {
+            if (e.key === "Enter") window.sendMessage();
+        });
+
+        window.compartilharSlide = async function() {
+            if (!window.lastGeneratedCode) return;
+
+            if(window.location.protocol === 'file:') {
+                addMessage("⚠️ **Aviso:** Você está testando o site direto da sua pasta (`file://`). O link gerado abaixo só vai funcionar no SEU computador. Para enviar para amigos de verdade, você precisa colocar este arquivo HTML online gratuitamente (ex: GitHub Pages, Vercel ou Netlify).", "ai");
+            }
+
+            if (!isFirebaseReady || !currentUser) {
+                addMessage("❌ O sistema de nuvem não conectou. Recarregue a página.", "ai");
+                return;
+            }
+
+            const loadingId = "share-" + Date.now();
+            addMessage("Salvando no banco de dados e gerando link... ⏳", "ai", loadingId);
+
+            try {
+                const docRef = await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'slides_compartilhados'), {
+                    html: window.lastGeneratedCode,
+                    createdAt: new Date().toISOString()
+                });
+                
+                const baseUrl = window.location.href.split('?')[0];
+                const shareUrl = baseUrl + "?view=" + docRef.id;
+                
+                const msgHtml = `
+                    ✅ <strong>Link gerado na Nuvem!</strong><br>
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <input type="text" value="${shareUrl}" id="input-${loadingId}" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-color);" readonly>
+                        <button class="btn-save" style="margin-top: 0; width: auto; padding: 10px 15px;" onclick="window.copiarTexto('input-${loadingId}', this)">Copiar</button>
+                    </div>
+                `;
+                document.getElementById(loadingId).innerHTML = msgHtml;
+
+            } catch (e) {
+                console.error("Erro ao salvar slide", e);
+                document.getElementById(loadingId).innerHTML = "❌ Ocorreu um erro ao gerar o link. Nuvem indisponível.";
+            }
+        }
+
+        window.copiarTexto = function(elementId, btn) {
+            var copyText = document.getElementById(elementId);
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            document.execCommand("copy");
+            const textoAntigo = btn.innerText;
+            btn.innerText = "Copiado!";
+            btn.style.background = "#198754";
+            setTimeout(() => { 
+                btn.innerText = textoAntigo; 
+                btn.style.background = "#0d6efd";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
