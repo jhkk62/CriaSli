@@ -4,82 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CRIASLI - Criador de Slides Pro</title>
+    
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💻%3C/text%3E%3C/svg%3E">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
     <style>
-        :root { --c1: #a1c4fd; --c2: #e0c3fc; --bg-color: #f4f4f9; --text-color: #333; --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.5); --msg-user: #0d6efd; --msg-user-txt: #fff; --msg-ai: #ffffff; --msg-ai-txt: #333; --input-bg: #ffffff; --modal-bg: #f8f9fa; }
-        body.dark-mode { --c1: #1a1a2e; --c2: #16213e; --bg-color: #12121e; --text-color: #f0f0f0; --glass-bg: rgba(30, 30, 45, 0.95); --glass-border: rgba(255, 255, 255, 0.1); --msg-user: #0d6efd; --msg-user-txt: #fff; --msg-ai: #2a2a40; --msg-ai-txt: #eee; --input-bg: #1e1e2f; --modal-bg: #1e1e2f; }
+        /* === TEMA E VARIÁVEIS === */
+        :root { 
+            --c1: #a1c4fd; --c2: #e0c3fc; 
+            --bg-color: #f4f4f9; --text-color: #333; 
+            --glass-bg: rgba(255, 255, 255, 0.9); --glass-border: rgba(255, 255, 255, 0.5);
+            --msg-user: #0d6efd; --msg-user-txt: #fff; --msg-ai: #ffffff; --msg-ai-txt: #333;
+            --input-bg: #ffffff; --modal-bg: #f8f9fa;
+        }
+
+        body.dark-mode { 
+            --c1: #1a1a2e; --c2: #16213e; 
+            --bg-color: #12121e; --text-color: #f0f0f0; 
+            --glass-bg: rgba(30, 30, 45, 0.95); --glass-border: rgba(255, 255, 255, 0.1);
+            --msg-user: #0d6efd; --msg-user-txt: #fff; --msg-ai: #2a2a40; --msg-ai-txt: #eee;
+            --input-bg: #1e1e2f; --modal-bg: #1e1e2f;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; }
-        body { color: var(--text-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: linear-gradient(135deg, var(--c1), var(--c2)); background-size: 400% 400%; animation: gradientBG 15s ease infinite; transition: background 0.5s, color 0.5s; }
-        @keyframes gradientBG { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
         
-        header { background: var(--glass-bg); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); position: relative; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        body { 
+            color: var(--text-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+            background: linear-gradient(135deg, var(--c1), var(--c2)); background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; transition: background 0.5s, color 0.5s;
+        }
+        @keyframes gradientBG { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+        /* === CABEÇALHO === */
+        header { 
+            background: var(--glass-bg); backdrop-filter: blur(15px); padding: 15px 25px; 
+            display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid var(--glass-border); position: relative; z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
         .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; color: var(--text-color);}
         .versao-badge { background: #0d6efd; color: white; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
+        
         .nav-links { display: flex; gap: 8px; flex-wrap: wrap; }
-        .nav-link { font-size: 11px; font-weight: bold; color: var(--text-color); cursor: pointer; transition: 0.2s; padding: 8px 12px; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--glass-border); display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .nav-link { 
+            font-size: 11px; font-weight: bold; color: var(--text-color); cursor: pointer; transition: 0.2s; 
+            padding: 8px 12px; border-radius: 8px; background: var(--input-bg); border: 1px solid var(--glass-border); 
+            display: flex; align-items: center; gap: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
         .nav-link:hover { filter: brightness(0.9); transform: translateY(-1px); }
         .btn-colorido { border: none !important; color: white !important; }
         body:not(.dark-mode) .nav-link:not(.btn-colorido) { color: #333; }
-        
+
+        /* === CHAT AREA === */
         main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 15px; overflow: hidden; position: relative; z-index: 10; }
-        .chat-container { width: 100%; max-width: 1100px; height: 100%; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
+        .chat-container { 
+            width: 100%; max-width: 1100px; height: 100%; 
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-radius: 20px; 
+            display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); 
+        }
         .chat-messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .message { padding: 18px 22px; border-radius: 18px; max-width: 80%; font-size: 15px; line-height: 1.6; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .message.user { align-self: flex-end; background: var(--msg-user); color: var(--msg-user-txt); border-bottom-right-radius: 4px; }
         .message.ai { align-self: flex-start; background: var(--msg-ai); color: var(--msg-ai-txt); border-bottom-left-radius: 4px; }
         
         .chat-input-area { padding: 15px 20px; display: flex; gap: 10px; background: var(--glass-bg); border-top: 1px solid var(--glass-border); flex-wrap: wrap; align-items: center;}
-        select, input[type="text"], input[type="password"], textarea { padding: 12px 15px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 500; font-size: 13px; transition: 0.3s; }
+        
+        select, input[type="text"], input[type="password"], textarea { 
+            padding: 12px 15px; border-radius: 12px; border: 1px solid var(--glass-border); 
+            background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 500; font-size: 13px; transition: 0.3s;
+        }
         select:hover, input:focus, textarea:focus { border-color: #0d6efd; box-shadow: 0 0 5px rgba(13,110,253,0.2); }
+        
         .btn-send { background: #0d6efd; color: #fff; border: none; padding: 12px 25px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 15px rgba(13,110,253,0.3);}
         .btn-send:hover { background: #0b5ed7; transform: translateY(-2px); }
         .btn-action { display: inline-block; background: #198754; color: white; border: none; padding: 15px 25px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 14px;}
         .btn-action:hover { filter: brightness(1.1); transform: scale(1.02); }
 
-        /* Modais */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 9999; }
+        /* === MODAIS BLINDADOS CONTRA BUGS DE CLIQUE === */
+        .modal-overlay { 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); 
+            display: none; justify-content: center; align-items: center; z-index: 9999; 
+        }
+        .modal-overlay.active { display: flex !important; }
         .modal-content { background: var(--modal-bg); color: var(--text-color); padding: 35px; border-radius: 20px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; border: 1px solid var(--glass-border); box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: var(--text-muted); transition: 0.2s; z-index: 10001; }
         .modal-close:hover { color: #dc3545; }
         .form-group { margin-bottom: 15px; text-align: left; } 
         .form-group label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; color: var(--text-color); opacity: 0.9;}
-        canvas { max-width: 100%; height: auto; }
+        
+        .dark-inputs input[type="password"] { background: #555555; color: white; border: none; padding: 15px; border-radius: 12px; font-family: monospace; letter-spacing: 2px; width: 100%; margin-bottom: 10px;}
+        .dark-inputs input[type="password"]::placeholder { color: #ccc; }
 
-        /* Jogos Tela Cheia */
+        /* === JOGOS EM TELA CHEIA === */
         #game-roguelike, #rpg-screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a0a; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; }
-        #rl-canvas { background: #1a1a2e; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,1); border: 2px solid #333; }
-        #rl-ui { position: absolute; top: 20px; left: 20px; color: white; font-family: monospace; font-size: 18px; pointer-events: none; text-shadow: 2px 2px 4px #000; }
-        #rl-level-up { display: none; position: absolute; background: rgba(10,10,20,0.95); padding: 40px; border-radius: 20px; border: 2px solid #0d6efd; text-align: center; color: white; flex-direction: column; gap: 20px; box-shadow: 0 0 60px rgba(13,110,253,0.5); max-width: 900px; max-height: 90vh; overflow-y: auto;}
+        #rl-canvas { background: #1a1a2e; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,1); border: 2px solid #333; max-width: 100%; max-height: 100%;}
+        #rl-ui { position: absolute; top: 20px; left: 20px; color: white; font-family: monospace; font-size: 18px; pointer-events: none; text-shadow: 2px 2px 4px #000; z-index: 100001; }
+        #rl-level-up { display: none; position: absolute; background: rgba(10,10,20,0.95); padding: 40px; border-radius: 20px; border: 2px solid #0d6efd; text-align: center; color: white; flex-direction: column; gap: 20px; box-shadow: 0 0 60px rgba(13,110,253,0.5); max-width: 900px; max-height: 90vh; overflow-y: auto; z-index: 100002;}
         .rl-card { background: #222; padding: 20px; border-radius: 12px; border: 3px solid #555; cursor: pointer; transition: 0.2s; flex: 1; min-width: 220px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .rl-card:hover { transform: scale(1.05); background: #333; }
 
-        /* === RESPONSIVIDADE (CELULARES E TABLETS) === */
+        /* === RESPONSIVIDADE === */
         @media (max-width: 768px) {
-            header { flex-direction: column; gap: 12px; padding: 10px; }
+            header { flex-direction: column; gap: 10px; padding: 15px; }
             .nav-links { justify-content: center; width: 100%; }
-            main { padding: 0; }
-            .chat-container { border-radius: 0; border: none; height: 100vh; box-shadow: none; }
+            .nav-link { padding: 6px 10px; font-size: 10px; }
+            .chat-container { border-radius: 0; border: none; height: 100%; }
             .chat-messages { padding: 15px; }
-            .message { max-width: 90%; font-size: 14px; padding: 12px 15px; }
+            .message { max-width: 95%; font-size: 14px; padding: 12px 16px; }
             .chat-input-area { padding: 10px; flex-direction: column; align-items: stretch; gap: 8px; }
             .chat-input-area > * { width: 100%; max-width: none !important; margin: 0; flex: none; }
             .modal-content { padding: 20px; width: 95%; }
-            .timer-display { font-size: 40px !important; }
-            .logo { font-size: 20px; }
+            .timer-display { font-size: 45px !important; }
             #rl-ui { font-size: 14px; top: 10px; left: 10px; }
             #rl-level-up { padding: 20px; gap: 10px; }
             .rl-card { padding: 15px; min-width: 100%; }
         }
-        
+
         ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; } body.dark-mode ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">💻 CRIASLI <span class="versao-badge">v3.0 Pro</span></div>
+    <div class="logo">💻 CRIASLI <span class="versao-badge">v3.1 Pro</span></div>
     <div class="nav-links">
         <button class="nav-link btn-colorido" style="background: #17a2b8;" onclick="window.toggleFullscreen()">🔲 TELA CHEIA</button>
         <button class="nav-link btn-colorido" style="background: #ffc107; color: black !important;" onclick="window.abrirModal('modal-jogos')">🎮 JOGUINHOS</button>
@@ -89,7 +140,7 @@
         <button class="nav-link" onclick="window.abrirModal('modal-feedback')">💬 FEEDBACK</button>
         <button class="nav-link" onclick="window.abrirModal('modal-creditos')">🤝 CRÉDITOS</button>
         <button class="nav-link" onclick="window.abrirModal('modal-admin')">🛡️ ADMIN</button>
-        <button class="nav-link" onclick="window.abrirModal('modal-config')">⚙️ OPÇÕES</button>
+        <button class="nav-link" onclick="window.abrirModal('modal-config')">⚙️ OPÇÕES E CORES</button>
     </div>
 </header>
 
@@ -103,8 +154,15 @@
         </div>
         <div class="chat-input-area">
             <button onclick="window.abrirModal('modal-estilos')" style="background:none; border:none; font-size:24px; cursor:pointer;" title="Estilos do Slide">🎨</button>
-            <select id="ai-selector" title="Escolha a IA"><option value="groq">Groq (Rápida/Grátis)</option><option value="chatgpt">ChatGPT (GPT-4o)</option><option value="gemini">Gemini (2.0 Flash)</option></select>
-            <select id="slide-count" title="Quantidade de Slides" style="max-width: 120px;"><option value="4">4 Slides</option><option value="6">6 Slides</option><option value="8">8 Slides</option><option value="10">10 Slides</option></select>
+            <select id="ai-selector" title="Escolha a IA">
+                <option value="groq">Groq (Rápida/Grátis)</option>
+                <option value="chatgpt">ChatGPT (GPT-4o)</option>
+                <option value="gemini">Gemini (2.0 Flash)</option>
+            </select>
+            <select id="slide-count" title="Quantidade de Slides" style="max-width: 120px;">
+                <option value="4">4 Slides</option><option value="6">6 Slides</option>
+                <option value="8">8 Slides</option><option value="10">10 Slides</option>
+            </select>
             <input type="text" id="custom-image-url" placeholder="URL da Imagem Opcional" style="max-width: 200px;">
             <input type="text" id="user-input" placeholder="Digite o tema do trabalho aqui..." style="flex:1;">
             <button onclick="window.enviarMensagem()" class="btn-send" id="btn-enviar">Gerar Slides</button>
@@ -153,7 +211,7 @@
                     <li>Rafael Reis</li>
                 </ul>
             </div>
-            <p style="margin-top: 15px; font-size: 13px; color: #888;">Versão: 3.0 Pro</p>
+            <p style="margin-top: 15px; font-size: 13px; color: #888;">Versão: 3.1 Pro</p>
         </div>
     </div>
 </div>
@@ -187,10 +245,14 @@
         </div>
         <div class="form-group"><label>Cores Fundo (Claro):</label><div style="display: flex; gap: 10px;"><input type="color" id="cor1-claro" style="height: 40px; padding:0; border:none; border-radius:8px; flex:1;"><input type="color" id="cor2-claro" style="height: 40px; padding:0; border:none; border-radius:8px; flex:1;"></div></div>
         <div class="form-group"><label>Cores Fundo (Escuro):</label><div style="display: flex; gap: 10px;"><input type="color" id="cor1-escuro" style="height: 40px; padding:0; border:none; border-radius:8px; flex:1;"><input type="color" id="cor2-escuro" style="height: 40px; padding:0; border:none; border-radius:8px; flex:1;"></div></div>
-        <h3 style="margin-top: 25px; margin-bottom: 15px; font-size: 18px; color: var(--text-color);">Chaves de IA</h3>
-        <div class="form-group"><input type="password" id="key-groq" placeholder="Groq (Começa com gsk_)"></div>
-        <div class="form-group"><input type="password" id="key-chatgpt" placeholder="ChatGPT (Começa com sk-)"></div>
-        <div class="form-group"><input type="password" id="key-gemini" placeholder="Gemini (Começa com AIzaSy)"></div>
+        
+        <h3 style="margin-top: 25px; margin-bottom: 15px; font-size: 18px; color: var(--text-color);">Chaves de IA Integradas</h3>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">As chaves foram configuradas no código. Caso queira alterá-las no seu navegador, digite abaixo:</p>
+        <div class="dark-inputs">
+            <div class="form-group"><input type="password" id="key-groq" placeholder="Chave do Groq"></div>
+            <div class="form-group"><input type="password" id="key-chatgpt" placeholder="Chave do ChatGPT"></div>
+            <div class="form-group"><input type="password" id="key-gemini" placeholder="Chave do Gemini"></div>
+        </div>
         <button class="btn-action" style="width: 100%; background: #0d6efd; padding: 15px; border-radius: 12px; margin-top: 10px;" onclick="window.salvarConfigs()">Salvar e Aplicar</button>
     </div>
 </div>
@@ -199,7 +261,15 @@
     <div class="modal-content">
         <span class="modal-close" onclick="window.fecharModal('modal-estilos')">×</span>
         <h2 style="margin-bottom: 20px;">Design e Animações</h2>
-        <div class="form-group"><label>Estilo Visual:</label><select id="estilo-sel" style="width:100%; padding:12px; border-radius:12px;"><option value="">Moderno Automático</option><option value="Fundo branco, texto limpo, estilo Apple.">Minimalista</option><option value="Cores pastéis, fontes serifadas clássicas.">Acadêmico</option><option value="Cores neon, cyberpunk.">Impactante / Gamer</option><option value="Fundo totalmente preto, textos brancos.">Sombrio / Dark</option></select></div>
+        <div class="form-group"><label>Estilo Visual:</label>
+            <select id="estilo-sel" style="width:100%; padding:12px; border-radius:12px;">
+                <option value="">Moderno Automático</option>
+                <option value="Fundo branco, texto limpo, estilo Apple.">Minimalista</option>
+                <option value="Cores pastéis, fontes serifadas clássicas.">Acadêmico</option>
+                <option value="Cores neon, cyberpunk.">Impactante / Gamer</option>
+                <option value="Fundo totalmente preto, textos brancos.">Sombrio / Dark</option>
+            </select>
+        </div>
         <div class="form-group"><label>Proporção:</label><select id="aspect-ratio" style="width:100%; padding:12px; border-radius:12px;"><option value="16/9">16:9 (Tela Larga)</option><option value="4/3">4:3 (Antigo)</option></select></div>
         <div class="form-group"><label>Animação:</label><select id="transicao-slide" style="width:100%; padding:12px; border-radius:12px;"><option value="fade">Fade In</option><option value="slide">Slide Up</option><option value="zoom">Zoom</option></select></div>
         <button class="btn-action" style="width: 100%; background: #0d6efd;" onclick="window.fecharModal('modal-estilos')">Confirmar</button>
@@ -231,10 +301,10 @@
         <span class="modal-close" onclick="window.fecharJogos()">×</span>
         <h2>Hora do Recreio 🎮</h2>
         <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
-            <button class="btn-action" style="background: #dc3545; width:100%;" onclick="window.iniciarRoguelike()">🦇 Roguelike Infinito</button>
-            <button class="btn-action" style="background: #6f42c1; width:100%;" onclick="window.iniciarRPG()">🌳 RPG Skill Tree (Idle)</button>
-            <button class="btn-action" style="background: #28a745; width:100%;" onclick="window.showGame('snake')">🐍 Cobrinha Classica</button>
-            <button class="btn-action" style="background: #17a2b8; width:100%;" onclick="window.showGame('tictactoe')">⭕ Jogo da Velha (vs IA)</button>
+            <button class="btn-action" style="background: #dc3545;" onclick="window.iniciarRoguelike()">🦇 Roguelike Infinito</button>
+            <button class="btn-action" style="background: #6f42c1;" onclick="window.iniciarRPG()">🌳 RPG Skill Tree</button>
+            <button class="btn-action" style="background: #28a745;" onclick="window.showGame('snake')">🐍 Cobrinha Classica</button>
+            <button class="btn-action" style="background: #17a2b8;" onclick="window.showGame('tictactoe')">⭕ Jogo da Velha (IA)</button>
         </div>
         
         <div id="game-snake" style="display:none; margin-top:20px;">
@@ -254,7 +324,7 @@
 <div class="modal-overlay" id="modal-preview">
     <div style="width: 100%; height: 100%; display: flex; flex-direction: column; background: var(--bg-color);">
         <div style="padding: 15px; background: var(--glass-bg); display: flex; gap: 10px; justify-content: center; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap;">
-            <button class="btn-action" style="background: #dc3545; padding: 12px 20px; border-radius: 8px;" onclick="window.fecharModal('modal-preview')">⬅ Voltar</button>
+            <button class="btn-action" style="background: #dc3545; padding: 12px 20px; border-radius: 8px;" onclick="window.fecharModal('modal-preview')">⬅ Voltar ao Chat</button>
             <button class="btn-action" style="background: #0d6efd; padding: 12px 20px; border-radius: 8px;" onclick="window.baixarPDF()">📥 Baixar PDF</button>
             <button class="btn-action" style="background: #198754; padding: 12px 20px; border-radius: 8px;" onclick="window.baixarHTML()">💾 Baixar HTML</button>
             <button class="btn-action" style="background: #6f42c1; padding: 12px 20px; border-radius: 8px;" onclick="window.copiarCodigoDireto()">📋 Copiar HTML</button>
@@ -286,14 +356,14 @@
     <div style="position: absolute; top: 10px; right: 10px; z-index: 100000;">
         <button onclick="window.fecharRoguelike()" style="background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); border: 2px solid white;">❌ Sair</button>
     </div>
-    <div id="rl-ui">
+    <div id="rl-ui" style="z-index: 100001;">
         🛡️ Nível: <span id="rl-lvl" style="color:#0d6efd;">1</span><br>
         🌟 XP: <span id="rl-xp">0</span> / <span id="rl-next">10</span><br>
         ❤️ HP: <span id="rl-hp" style="color:#dc3545;">100</span><br>
         <span style="font-size:12px; color:#aaa;">Use WASD. Tiro Auto.</span>
     </div>
-    <canvas id="rl-canvas" width="1000" height="600"></canvas>
-    <div id="rl-level-up">
+    <canvas id="rl-canvas" width="1000" height="600" style="max-width: 100%; max-height: 100%;"></canvas>
+    <div id="rl-level-up" style="z-index: 100002;">
         <h2 style="color:#ffc107; font-size: 28px; margin:0;">LEVEL UP!</h2>
         <p style="font-size: 14px;">Escolha seu Upgrade de Habilidade:</p>
         <div style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap; margin-top:10px;" id="rl-cards-container"></div>
@@ -302,11 +372,16 @@
 
 <script>
     try {
+        // === AS SUAS CHAVES DE API PADRÃO PARA TODOS OS SEUS AMIGOS ===
+        window.MINHA_CHAVE_GROQ = "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"; 
+        window.MINHA_CHAVE_CHATGPT = "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"; 
+        window.MINHA_CHAVE_GEMINI = "AQ.Ab8RN6L9ndvNbXU9O6EQgFAD2o2jY0QcaFfQ6xRp046g2jdl5Q"; 
+
         window.lastCode = "";
         window.lastSlideUrl = "";
         
-        window.abrirModal = function(id) { document.getElementById(id).style.display = 'flex'; };
-        window.fecharModal = function(id) { document.getElementById(id).style.display = 'none'; };
+        window.abrirModal = function(id) { document.getElementById(id).classList.add('active'); };
+        window.fecharModal = function(id) { document.getElementById(id).classList.remove('active'); };
         window.usarPrompt = function(txt) { document.getElementById('user-input').value = txt; window.fecharModal('modal-inspiracao'); };
 
         window.salvarFeedback = function() {
@@ -377,9 +452,9 @@
         };
 
         window.carregarConfigs = function() {
-            document.getElementById('key-groq').value = localStorage.getItem('api_groq') || "";
-            document.getElementById('key-chatgpt').value = localStorage.getItem('api_chatgpt') || "";
-            document.getElementById('key-gemini').value = localStorage.getItem('api_gemini') || "";
+            document.getElementById('key-groq').value = localStorage.getItem('api_groq') || window.MINHA_CHAVE_GROQ;
+            document.getElementById('key-chatgpt').value = localStorage.getItem('api_chatgpt') || window.MINHA_CHAVE_CHATGPT;
+            document.getElementById('key-gemini').value = localStorage.getItem('api_gemini') || window.MINHA_CHAVE_GEMINI;
             
             document.getElementById('dark-mode-toggle').checked = localStorage.getItem('dark_mode') === 'true';
             document.getElementById('cor1-claro').value = localStorage.getItem('c1_c') || "#a1c4fd";
@@ -426,7 +501,14 @@
 
             try {
                 const ai = document.getElementById('ai-selector').value;
-                const key = document.getElementById('key-'+ai).value;
+                let key = document.getElementById('key-'+ai).value;
+                
+                if(!key) {
+                    if (ai === 'groq') key = window.MINHA_CHAVE_GROQ;
+                    else if (ai === 'chatgpt') key = window.MINHA_CHAVE_CHATGPT;
+                    else if (ai === 'gemini') key = window.MINHA_CHAVE_GEMINI;
+                }
+
                 if(!key) throw new Error(`Vá nas Configurações (⚙️) e cole sua API Key do ${ai}!`);
                 
                 const count = document.getElementById('slide-count').value;
@@ -440,7 +522,9 @@
                 if(tr==="slide") an = "@keyframes a {from{transform:translateY(50px); opacity:0;} to{transform:translateY(0); opacity:1;}} section > * { animation: a 0.8s ease-out; }";
                 if(tr==="zoom") an = "@keyframes a {from{transform:scale(0.8); opacity:0;} to{transform:scale(1); opacity:1;}} section > * { animation: a 0.8s ease-out; }";
 
-                const rImg = img !== "" ? `OBRIGATÓRIO usar esta imagem customizada: <img src="${img}" style="max-width:80%; border-radius:10px;">` : `NUNCA USE IMGUR. Para imagens use APENAS: <img src="https://image.pollinations.ai/prompt/KEYWORDS?nologo=true" style="max-width:80%; border-radius:10px;"> onde KEYWORDS são termos em inglês.`;
+                const rImg = img !== "" 
+                    ? `OBRIGATÓRIO usar esta imagem customizada em algum slide: <img src="${img}" style="max-width:80%; border-radius:10px;">` 
+                    : `Para imagens de ilustração, use APENAS a tag: <img src="https://image.pollinations.ai/prompt/KEYWORDS?nologo=true" style="max-width:80%; border-radius:10px;"> onde KEYWORDS são termos em inglês com hífens.`;
 
                 const sys = `Crie HTML <!DOCTYPE html> de apresentação. 
                 Regras: 1. ${count} seções <section class="slide"> com CSS min-height:100vh; aspect-ratio:${asp}; justify-content:center; align-items:center; text-align:center; padding:40px; page-break-after:always; display:flex; flex-direction:column;. 
@@ -515,17 +599,13 @@
             }, 100);
         };
 
-        // TIC TAC TOE VS AI
         window.initTicTacToe = function() {
             let tB = ["","","","","","","","",""], tP = "X", tA = true; document.getElementById("ttt-status").innerText = "Sua Vez: X";
             const g = document.getElementById("ttt-grid"); g.innerHTML = "";
             const checkWin = (board, p) => { const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return w.some(v => board[v[0]]===p && board[v[1]]===p && board[v[2]]===p); };
             const aiMove = () => {
-                if(!tA) return;
-                let empty = []; tB.forEach((v,i) => { if(v==="") empty.push(i); });
-                if(empty.length === 0) return;
-                let move = -1;
-                for(let i of empty) { tB[i]="O"; if(checkWin(tB, "O")) move=i; tB[i]=""; }
+                if(!tA) return; let empty = []; tB.forEach((v,i) => { if(v==="") empty.push(i); }); if(empty.length === 0) return;
+                let move = -1; for(let i of empty) { tB[i]="O"; if(checkWin(tB, "O")) move=i; tB[i]=""; }
                 if(move===-1) { for(let i of empty) { tB[i]="X"; if(checkWin(tB, "X")) move=i; tB[i]=""; } }
                 if(move===-1) move = empty[Math.floor(Math.random()*empty.length)];
                 tB[move] = "O"; let cells = g.children; cells[move].innerText = "O"; cells[move].style.color = "#dc3545";
@@ -536,12 +616,10 @@
             for(let i=0; i<9; i++) {
                 const c = document.createElement("div"); c.style.cssText = "width:80px; height:80px; background:var(--input-bg); border:2px solid var(--glass-border); display:flex; justify-content:center; align-items:center; font-size:36px; cursor:pointer;";
                 c.onclick = () => {
-                    if(tB[i] !== "" || !tA || tP !== "X") return;
-                    tB[i] = "X"; c.innerText = "X"; c.style.color = "#198754";
+                    if(tB[i] !== "" || !tA || tP !== "X") return; tB[i] = "X"; c.innerText = "X"; c.style.color = "#198754";
                     if(checkWin(tB, "X")) { document.getElementById("ttt-status").innerText = "Você Venceu! 🎉"; tA = false; return; }
                     if(!tB.includes("")) { document.getElementById("ttt-status").innerText = "Deu Velha! 👵"; tA = false; return; }
-                    tP = "O"; document.getElementById("ttt-status").innerText = "IA Pensando... 🤔";
-                    setTimeout(aiMove, 500);
+                    tP = "O"; document.getElementById("ttt-status").innerText = "IA Pensando... 🤔"; setTimeout(aiMove, 500);
                 }; g.appendChild(c);
             }
         };
@@ -584,7 +662,7 @@
                 if(document.getElementById('game-roguelike').style.display === 'flex') window.fecharRoguelike();
                 if(document.getElementById('rpg-screen').style.display === 'flex') window.fecharRPG();
             }
-            if(document.getElementById('modal-jogos').style.display === 'flex' && document.getElementById('game-snake').style.display === 'block') {
+            if(document.getElementById('modal-jogos').classList.contains('active') && document.getElementById('game-snake').style.display === 'block') {
                 const k = e.keyCode; const u=dyS===-10, d=dyS===10, r=dxS===10, l=dxS===-10;
                 if(k===37&&!r){dxS=-10;dyS=0;} if(k===38&&!d){dxS=0;dyS=-10;} if(k===39&&!l){dxS=10;dyS=0;} if(k===40&&!u){dxS=0;dyS=10;}
             }
@@ -665,7 +743,7 @@
                 {n: "Anotações (XP Ganho)", f: (m)=>{ pl.xm += 0.05*m; }}, {n: "Página Velha (XP Ganho)", f: (m)=>{ pl.xm += 0.1*m; }}, {n: "Caderno (XP Ganho)", f: (m)=>{ pl.xm += 0.2*m; }}, {n: "Enciclopédia (XP Ganho)", f: (m)=>{ pl.xm += 0.5*m; }}, {n: "Grimório (XP Ganho)", f: (m)=>{ pl.xm += 1.0*m; }}, {n: "Mente Divina (XP MAX)", f: (m)=>{ pl.xm += 2.5*m; }},
                 {n: "Band-aid (Regen)", f: (m)=>{ pl.regen += 0.05*m; }}, {n: "Gaze (Regen)", f: (m)=>{ pl.regen += 0.1*m; }}, {n: "Curativo (Regen)", f: (m)=>{ pl.regen += 0.25*m; }}, {n: "Anel Vital (Regen)", f: (m)=>{ pl.regen += 0.5*m; }}, {n: "Imortalidade (Regen MAX)", f: (m)=>{ pl.regen += 1.5*m; }},
                 {n: "Lente Quebrada (Crit)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.02*m); }}, {n: "Mira Laser (Crit)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.1*m); }}, {n: "Olho Assassino (Crit MAX)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.3*m); }},
-                {n: "Golpe Baixo (Dano Crit)", f: (m)=>{ pl.cM += 0.3*m; }}, {n: "Fatalidade (Dano Crit)", f: (m)=>{ pl.cM += 1.5*m; }}, {n: "Aniquilador (Dano Crit)", f: (m)=>{ pl.cM += 4.0*m; }},
+                {n: "Golpe Baixo (Dano Crit)", f: (m)=>{ pl.cM += 0.3*m; }}, {n: "Fatalidade (Dano Crit)", f: (m)=>{ pl.cM += 1.5*m; }}, {n: "Aniquilador (Dano Crit MAX)", f: (m)=>{ pl.cM += 4.0*m; }},
                 {n: "Cano Duplo (Spread)", f: (m)=>{ pl.spr += Math.ceil(0.5*m); }}, {n: "Espingarda (Spread)", f: (m)=>{ pl.spr += Math.ceil(1.0*m); }}, {n: "Chuva Balas (Spread)", f: (m)=>{ pl.spr += Math.ceil(2.0*m); }}
             ];
             let choices = [];
@@ -679,6 +757,7 @@
             });
             document.getElementById('rl-level-up').style.display = 'flex';
         };
+
     } catch (criticalError) { console.error("CRITICAL JS ERROR:", criticalError); }
 </script>
 </body>
