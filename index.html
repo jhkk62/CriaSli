@@ -13,6 +13,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, sans-serif; }
         body { color: var(--text-color); display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: linear-gradient(135deg, var(--c1), var(--c2)); background-size: 400% 400%; animation: gradientBG 15s ease infinite; transition: background 0.5s, color 0.5s; }
         @keyframes gradientBG { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+        
         header { background: var(--glass-bg); backdrop-filter: blur(15px); padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--glass-border); position: relative; z-index: 100; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .logo { font-size: 24px; font-weight: 900; letter-spacing: -1px; display: flex; align-items: center; gap: 10px; color: var(--text-color);}
         .versao-badge { background: #0d6efd; color: white; font-size: 11px; padding: 3px 8px; border-radius: 12px; font-weight: bold; }
@@ -21,12 +22,14 @@
         .nav-link:hover { filter: brightness(0.9); transform: translateY(-1px); }
         .btn-colorido { border: none !important; color: white !important; }
         body:not(.dark-mode) .nav-link:not(.btn-colorido) { color: #333; }
+        
         main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 15px; overflow: hidden; position: relative; z-index: 10; }
         .chat-container { width: 100%; max-width: 1100px; height: 100%; background: var(--glass-bg); backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 20px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.15); }
         .chat-messages { flex: 1; padding: 25px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px; }
         .message { padding: 18px 22px; border-radius: 18px; max-width: 80%; font-size: 15px; line-height: 1.6; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .message.user { align-self: flex-end; background: var(--msg-user); color: var(--msg-user-txt); border-bottom-right-radius: 4px; }
         .message.ai { align-self: flex-start; background: var(--msg-ai); color: var(--msg-ai-txt); border-bottom-left-radius: 4px; }
+        
         .chat-input-area { padding: 15px 20px; display: flex; gap: 10px; background: var(--glass-bg); border-top: 1px solid var(--glass-border); flex-wrap: wrap; align-items: center;}
         select, input[type="text"], input[type="password"], textarea { padding: 12px 15px; border-radius: 12px; border: 1px solid var(--glass-border); background: var(--input-bg); color: var(--text-color); outline: none; font-weight: 500; font-size: 13px; transition: 0.3s; }
         select:hover, input:focus, textarea:focus { border-color: #0d6efd; box-shadow: 0 0 5px rgba(13,110,253,0.2); }
@@ -34,18 +37,42 @@
         .btn-send:hover { background: #0b5ed7; transform: translateY(-2px); }
         .btn-action { display: inline-block; background: #198754; color: white; border: none; padding: 15px 25px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-size: 14px;}
         .btn-action:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+        /* Modais */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); display: none; justify-content: center; align-items: center; z-index: 9999; }
         .modal-content { background: var(--modal-bg); color: var(--text-color); padding: 35px; border-radius: 20px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; border: 1px solid var(--glass-border); box-shadow: 0 25px 50px rgba(0,0,0,0.4); }
         .modal-close { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: var(--text-muted); transition: 0.2s; z-index: 10001; }
         .modal-close:hover { color: #dc3545; }
         .form-group { margin-bottom: 15px; text-align: left; } 
         .form-group label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; color: var(--text-color); opacity: 0.9;}
+        canvas { max-width: 100%; height: auto; }
+
+        /* Jogos Tela Cheia */
         #game-roguelike, #rpg-screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0a0a0a; z-index: 99999; flex-direction: column; align-items: center; justify-content: center; }
         #rl-canvas { background: #1a1a2e; border-radius: 12px; box-shadow: 0 0 40px rgba(0,0,0,1); border: 2px solid #333; }
         #rl-ui { position: absolute; top: 20px; left: 20px; color: white; font-family: monospace; font-size: 18px; pointer-events: none; text-shadow: 2px 2px 4px #000; }
         #rl-level-up { display: none; position: absolute; background: rgba(10,10,20,0.95); padding: 40px; border-radius: 20px; border: 2px solid #0d6efd; text-align: center; color: white; flex-direction: column; gap: 20px; box-shadow: 0 0 60px rgba(13,110,253,0.5); max-width: 900px; max-height: 90vh; overflow-y: auto;}
         .rl-card { background: #222; padding: 20px; border-radius: 12px; border: 3px solid #555; cursor: pointer; transition: 0.2s; flex: 1; min-width: 220px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .rl-card:hover { transform: scale(1.05); background: #333; }
+
+        /* === RESPONSIVIDADE (CELULARES E TABLETS) === */
+        @media (max-width: 768px) {
+            header { flex-direction: column; gap: 12px; padding: 10px; }
+            .nav-links { justify-content: center; width: 100%; }
+            main { padding: 0; }
+            .chat-container { border-radius: 0; border: none; height: 100vh; box-shadow: none; }
+            .chat-messages { padding: 15px; }
+            .message { max-width: 90%; font-size: 14px; padding: 12px 15px; }
+            .chat-input-area { padding: 10px; flex-direction: column; align-items: stretch; gap: 8px; }
+            .chat-input-area > * { width: 100%; max-width: none !important; margin: 0; flex: none; }
+            .modal-content { padding: 20px; width: 95%; }
+            .timer-display { font-size: 40px !important; }
+            .logo { font-size: 20px; }
+            #rl-ui { font-size: 14px; top: 10px; left: 10px; }
+            #rl-level-up { padding: 20px; gap: 10px; }
+            .rl-card { padding: 15px; min-width: 100%; }
+        }
+        
         ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.2); border-radius: 10px; } body.dark-mode ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); }
     </style>
 </head>
@@ -62,7 +89,7 @@
         <button class="nav-link" onclick="window.abrirModal('modal-feedback')">💬 FEEDBACK</button>
         <button class="nav-link" onclick="window.abrirModal('modal-creditos')">🤝 CRÉDITOS</button>
         <button class="nav-link" onclick="window.abrirModal('modal-admin')">🛡️ ADMIN</button>
-        <button class="nav-link" onclick="window.abrirModal('modal-config')">⚙️ OPÇÕES E CORES</button>
+        <button class="nav-link" onclick="window.abrirModal('modal-config')">⚙️ OPÇÕES</button>
     </div>
 </header>
 
@@ -86,12 +113,12 @@
     </div>
 </main>
 
-<div class="modal-overlay" id="modal-cronometro" style="display: none;">
+<div class="modal-overlay" id="modal-cronometro">
     <div class="modal-content" style="text-align:center;">
         <span class="modal-close" onclick="window.fecharModal('modal-cronometro')">×</span>
         <h2 style="margin-bottom: 10px;">Cronômetro de Apresentação</h2>
         <div id="tempo-display" style="font-size: 60px; margin: 20px 0; color: #0d6efd; font-family: monospace; font-weight: 900;">00:00</div>
-        <div style="display: flex; gap: 10px; justify-content: center;">
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
             <button class="btn-action" style="background:#198754;" onclick="window.timerStart()">▶ Iniciar</button>
             <button class="btn-action" style="background:#ffc107; color:black;" onclick="window.timerPause()">⏸ Pausar</button>
             <button class="btn-action" style="background:#dc3545;" onclick="window.timerReset()">⏹ Zerar</button>
@@ -99,7 +126,7 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-feedback" style="display: none;">
+<div class="modal-overlay" id="modal-feedback">
     <div class="modal-content">
         <span class="modal-close" onclick="window.fecharModal('modal-feedback')">×</span>
         <h2 style="margin-bottom: 20px;">💬 Feedback</h2>
@@ -109,7 +136,7 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-creditos" style="display: none;">
+<div class="modal-overlay" id="modal-creditos">
     <div class="modal-content" style="text-align: center;">
         <span class="modal-close" onclick="window.fecharModal('modal-creditos')">×</span>
         <h2 style="margin-bottom: 15px;">🤝 Créditos e Informações</h2>
@@ -131,7 +158,7 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-admin" style="display: none;">
+<div class="modal-overlay" id="modal-admin">
     <div class="modal-content">
         <span class="modal-close" onclick="window.fecharModal('modal-admin')">×</span>
         <h2 style="margin-bottom: 15px;">🛡️ Acesso Administrativo</h2>
@@ -140,19 +167,17 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-painel-feedbacks" style="display: none;">
+<div class="modal-overlay" id="modal-painel-feedbacks">
     <div class="modal-content" style="max-width: 600px;">
         <span class="modal-close" onclick="window.fecharModal('modal-painel-feedbacks')">×</span>
         <h2 style="margin-bottom: 15px; color: #0d6efd;">🛡️ Painel de Controle</h2>
         <p style="margin-bottom: 15px; font-size: 14px;">Aqui estão as mensagens recebidas dos usuários:</p>
-        
         <div id="lista-feedbacks" style="display: flex; flex-direction: column; gap: 10px; max-height: 350px; overflow-y: auto; padding-right: 5px;"></div>
-        
         <button class="btn-action" style="width: 100%; background: #dc3545; margin-top: 20px;" onclick="window.limparFeedbacks()">Limpar Todos os Feedbacks</button>
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-config" style="display: none;">
+<div class="modal-overlay" id="modal-config">
     <div class="modal-content">
         <span class="modal-close" onclick="window.fecharModal('modal-config')">×</span>
         <h2 style="margin-bottom: 20px; color: var(--text-color); font-weight: 800;">Ajustes e Cores</h2>
@@ -160,8 +185,8 @@
             <label style="margin:0;">Modo Escuro:</label>
             <input type="checkbox" id="dark-mode-toggle" style="width: auto; transform: scale(1.5); cursor: pointer;" onchange="window.salvarConfigs()">
         </div>
-        <div class="form-group"><label>Cores Fundo (Claro):</label><div style="display: flex; gap: 10px;"><input type="color" id="cor1-claro" style="height: 40px; padding:0; border:none; border-radius:8px;"><input type="color" id="cor2-claro" style="height: 40px; padding:0; border:none; border-radius:8px;"></div></div>
-        <div class="form-group"><label>Cores Fundo (Escuro):</label><div style="display: flex; gap: 10px;"><input type="color" id="cor1-escuro" style="height: 40px; padding:0; border:none; border-radius:8px;"><input type="color" id="cor2-escuro" style="height: 40px; padding:0; border:none; border-radius:8px;"></div></div>
+        <div class="form-group"><label>Cores Fundo (Claro):</label><div style="display: flex; gap: 10px;"><input type="color" id="cor1-claro" style="height: 40px; padding:0; border:none; border-radius:8px; flex:1;"><input type="color" id="cor2-claro" style="height: 40px; padding:0; border:none; border-radius:8px; flex:1;"></div></div>
+        <div class="form-group"><label>Cores Fundo (Escuro):</label><div style="display: flex; gap: 10px;"><input type="color" id="cor1-escuro" style="height: 40px; padding:0; border:none; border-radius:8px; flex:1;"><input type="color" id="cor2-escuro" style="height: 40px; padding:0; border:none; border-radius:8px; flex:1;"></div></div>
         <h3 style="margin-top: 25px; margin-bottom: 15px; font-size: 18px; color: var(--text-color);">Chaves de IA</h3>
         <div class="form-group"><input type="password" id="key-groq" placeholder="Groq (Começa com gsk_)"></div>
         <div class="form-group"><input type="password" id="key-chatgpt" placeholder="ChatGPT (Começa com sk-)"></div>
@@ -170,7 +195,7 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-estilos" style="display: none;">
+<div class="modal-overlay" id="modal-estilos">
     <div class="modal-content">
         <span class="modal-close" onclick="window.fecharModal('modal-estilos')">×</span>
         <h2 style="margin-bottom: 20px;">Design e Animações</h2>
@@ -181,7 +206,7 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-dicas" style="display: none;">
+<div class="modal-overlay" id="modal-dicas">
     <div class="modal-content">
         <span class="modal-close" onclick="window.fecharModal('modal-dicas')">×</span>
         <h2>Dicas para Apresentar 🗣️</h2><br>
@@ -189,7 +214,7 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-inspiracao" style="display: none;">
+<div class="modal-overlay" id="modal-inspiracao">
     <div class="modal-content">
         <span class="modal-close" onclick="window.fecharModal('modal-inspiracao')">×</span>
         <h2>💡 Ideias Prontas</h2>
@@ -201,15 +226,15 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-jogos" style="display: none;">
+<div class="modal-overlay" id="modal-jogos">
     <div class="modal-content" style="text-align: center;">
         <span class="modal-close" onclick="window.fecharJogos()">×</span>
         <h2>Hora do Recreio 🎮</h2>
         <div style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-top: 15px;">
-            <button class="btn-action" style="background: #dc3545;" onclick="window.iniciarRoguelike()">🦇 Roguelike Infinito</button>
-            <button class="btn-action" style="background: #6f42c1;" onclick="window.iniciarRPG()">🌳 RPG Skill Tree</button>
-            <button class="btn-action" style="background: #28a745;" onclick="window.showGame('snake')">🐍 Cobrinha Classica</button>
-            <button class="btn-action" style="background: #17a2b8;" onclick="window.showGame('tictactoe')">⭕ Jogo da Velha</button>
+            <button class="btn-action" style="background: #dc3545; width:100%;" onclick="window.iniciarRoguelike()">🦇 Roguelike Infinito</button>
+            <button class="btn-action" style="background: #6f42c1; width:100%;" onclick="window.iniciarRPG()">🌳 RPG Skill Tree (Idle)</button>
+            <button class="btn-action" style="background: #28a745; width:100%;" onclick="window.showGame('snake')">🐍 Cobrinha Classica</button>
+            <button class="btn-action" style="background: #17a2b8; width:100%;" onclick="window.showGame('tictactoe')">⭕ Jogo da Velha (vs IA)</button>
         </div>
         
         <div id="game-snake" style="display:none; margin-top:20px;">
@@ -219,32 +244,32 @@
         </div>
 
         <div id="game-tictactoe" style="display:none; margin-top:20px;">
-            <p id="ttt-status" style="font-size:18px; font-weight:bold; color:#0d6efd;">Vez do Jogador: X</p>
+            <p id="ttt-status" style="font-size:18px; font-weight:bold; color:#0d6efd;">Sua Vez: X</p>
             <div style="display:grid; grid-template-columns:repeat(3, 80px); gap:5px; justify-content:center; margin:20px auto;" id="ttt-grid"></div>
             <button class="btn-action" onclick="window.initTicTacToe()">▶️ Reiniciar Jogo</button>
         </div>
     </div>
 </div>
 
-<div class="modal-overlay" id="modal-preview" style="display: none;">
+<div class="modal-overlay" id="modal-preview">
     <div style="width: 100%; height: 100%; display: flex; flex-direction: column; background: var(--bg-color);">
-        <div style="padding: 15px; background: var(--glass-bg); display: flex; gap: 10px; justify-content: center; border-bottom: 1px solid var(--glass-border);">
-            <button class="btn-action" style="background: #dc3545; padding: 12px 20px; border-radius: 8px;" onclick="window.fecharModal('modal-preview')">⬅ Voltar ao Chat</button>
+        <div style="padding: 15px; background: var(--glass-bg); display: flex; gap: 10px; justify-content: center; border-bottom: 1px solid var(--glass-border); flex-wrap: wrap;">
+            <button class="btn-action" style="background: #dc3545; padding: 12px 20px; border-radius: 8px;" onclick="window.fecharModal('modal-preview')">⬅ Voltar</button>
             <button class="btn-action" style="background: #0d6efd; padding: 12px 20px; border-radius: 8px;" onclick="window.baixarPDF()">📥 Baixar PDF</button>
-            <button class="btn-action" style="background: #198754; padding: 12px 20px; border-radius: 8px;" onclick="window.baixarHTML()">💾 Baixar HTML (Site)</button>
+            <button class="btn-action" style="background: #198754; padding: 12px 20px; border-radius: 8px;" onclick="window.baixarHTML()">💾 Baixar HTML</button>
             <button class="btn-action" style="background: #6f42c1; padding: 12px 20px; border-radius: 8px;" onclick="window.copiarCodigoDireto()">📋 Copiar HTML</button>
         </div>
         <iframe id="preview-frame" style="flex: 1; border: none; background: white;"></iframe>
     </div>
 </div>
 
-<div id="rpg-screen" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#111; z-index:999999; flex-direction:column; color:white;">
-    <div style="padding:15px; background:#000; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #333;">
+<div id="rpg-screen">
+    <div style="padding:15px; background:#000; display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #333; flex-wrap:wrap; gap:10px;">
         <h2 style="color:#ffc107; margin:0;">⚔️ INFINITE DEV RPG (IDLE)</h2>
         <div style="display:flex; gap:20px; align-items:center;"><span style="color:#ffc107; font-weight:bold; font-size:20px;" id="rpg-xp-display">XP: 0</span><button class="btn-action" style="background:#dc3545;" onclick="window.fecharRPG()">Sair do Jogo</button></div>
     </div>
-    <div style="display:flex; flex:1; overflow:hidden;">
-        <div style="flex:1; padding:20px; border-right:2px solid #333; display:flex; flex-direction:column; align-items:center; background:#1e1e2f;">
+    <div style="display:flex; flex:1; overflow:hidden; flex-wrap:wrap;">
+        <div style="flex:1; padding:20px; border-right:2px solid #333; display:flex; flex-direction:column; align-items:center; background:#1e1e2f; min-width: 300px;">
             <h3 style="color:#198754; margin-bottom:10px;">🛡️ BONEQUINHO (Nvl <span id="rpg-pl-lvl">1</span>)</h3>
             <div style="width:100%; max-width:300px; height:20px; background:#444; border-radius:10px; overflow:hidden; margin-bottom:5px;"><div id="rpg-pl-hpbar" style="height:100%; background:#198754; transition:0.2s; width:100%;"></div></div>
             <p>HP: <span id="rpg-pl-hp">100</span>/<span id="rpg-pl-maxhp">100</span> | Dano: <span id="rpg-pl-dmg">10</span></p>
@@ -253,25 +278,25 @@
             <p>HP: <span id="rpg-en-hp">50</span>/<span id="rpg-en-maxhp">50</span> | Dano: <span id="rpg-en-dmg">5</span></p>
             <div id="rpg-log" style="margin-top:30px; font-size:13px; color:#aaa; text-align:left; width:100%; height:150px; overflow-y:auto; background:#000; padding:10px; border-radius:5px;"></div>
         </div>
-        <div style="flex:2; padding:20px; overflow:auto; background:#2a2a40; text-align:center;"><h2>Árvore de Habilidades Infinita</h2><div id="tree-root" style="margin-top:20px;"></div></div>
+        <div style="flex:2; padding:20px; overflow:auto; background:#2a2a40; text-align:center; min-width: 300px;"><h2>Árvore de Habilidades Infinita</h2><div id="tree-root" style="margin-top:20px;"></div></div>
     </div>
 </div>
 
-<div id="game-roguelike" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:#0a0a0a; z-index:99999; flex-direction:column; align-items:center; justify-content:center;">
-    <div style="position: absolute; top: 20px; right: 30px; z-index: 100000;">
-        <button onclick="window.fecharRoguelike()" style="background: #dc3545; color: white; padding: 12px 25px; border: none; border-radius: 12px; cursor: pointer; font-weight: bold; font-size: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); border: 2px solid white;">❌ Sair do Jogo</button>
+<div id="game-roguelike">
+    <div style="position: absolute; top: 10px; right: 10px; z-index: 100000;">
+        <button onclick="window.fecharRoguelike()" style="background: #dc3545; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.8); border: 2px solid white;">❌ Sair</button>
     </div>
     <div id="rl-ui">
         🛡️ Nível: <span id="rl-lvl" style="color:#0d6efd;">1</span><br>
         🌟 XP: <span id="rl-xp">0</span> / <span id="rl-next">10</span><br>
         ❤️ HP: <span id="rl-hp" style="color:#dc3545;">100</span><br>
-        <span style="font-size:12px; color:#aaa;">Use WASD para mover.<br>Tiro Automático.</span>
+        <span style="font-size:12px; color:#aaa;">Use WASD. Tiro Auto.</span>
     </div>
     <canvas id="rl-canvas" width="1000" height="600"></canvas>
     <div id="rl-level-up">
-        <h2 style="color:#ffc107; font-size: 32px; margin:0; text-shadow: 2px 2px 5px #000;">LEVEL UP!</h2>
-        <p style="font-size: 16px;">Escolha seu Upgrade de Habilidade:</p>
-        <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin-top:10px;" id="rl-cards-container"></div>
+        <h2 style="color:#ffc107; font-size: 28px; margin:0;">LEVEL UP!</h2>
+        <p style="font-size: 14px;">Escolha seu Upgrade de Habilidade:</p>
+        <div style="display:flex; gap:15px; justify-content:center; flex-wrap:wrap; margin-top:10px;" id="rl-cards-container"></div>
     </div>
 </div>
 
@@ -284,22 +309,16 @@
         window.fecharModal = function(id) { document.getElementById(id).style.display = 'none'; };
         window.usarPrompt = function(txt) { document.getElementById('user-input').value = txt; window.fecharModal('modal-inspiracao'); };
 
-        /* ========================================= */
-        /* === SISTEMA DE ADMIN E DE FEEDBACKS   === */
-        /* ========================================= */
         window.salvarFeedback = function() {
             let nome = document.getElementById('fb-nome').value.trim();
             let msg = document.getElementById('fb-msg').value.trim();
             if(!nome || !msg) { alert("Preencha seu nome e a mensagem!"); return; }
-            
             let fbs = JSON.parse(localStorage.getItem('criasli_fbs') || "[]");
             fbs.push({ n: nome, m: msg, d: new Date().toLocaleString() });
             localStorage.setItem('criasli_fbs', JSON.stringify(fbs));
-            
             alert('Mensagem enviada com sucesso! Muito obrigado pelo feedback.');
             window.fecharModal('modal-feedback');
-            document.getElementById('fb-nome').value = '';
-            document.getElementById('fb-msg').value = '';
+            document.getElementById('fb-nome').value = ''; document.getElementById('fb-msg').value = '';
         };
 
         window.verificarAdmin = function() {
@@ -314,26 +333,17 @@
         window.renderizarFeedbacks = function() {
             let fbs = JSON.parse(localStorage.getItem('criasli_fbs') || "[]");
             let lista = document.getElementById('lista-feedbacks');
-            if(fbs.length === 0) {
-                lista.innerHTML = "<p style='color: var(--text-muted); text-align: center; margin-top: 20px;'>Nenhum feedback recebido ainda no banco de dados.</p>";
-            } else {
-                lista.innerHTML = fbs.map(f => `
-                    <div style="background: var(--input-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: left;">
-                        <strong style="color: #0d6efd; font-size: 15px;">👤 ${f.n}</strong> 
-                        <span style="font-size: 11px; color: #888; float: right;">📅 ${f.d}</span>
-                        <p style="margin-top: 8px; font-size: 14px; color: var(--text-color);">${f.m}</p>
-                    </div>
-                `).join('');
+            if(fbs.length === 0) { lista.innerHTML = "<p style='color: var(--text-muted); text-align: center; margin-top: 20px;'>Nenhum feedback recebido ainda.</p>"; } 
+            else {
+                lista.innerHTML = fbs.map(f => `<div style="background: var(--input-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--glass-border); text-align: left; margin-bottom:10px;"><strong style="color: #0d6efd; font-size: 15px;">👤 ${f.n}</strong> <span style="font-size: 11px; color: #888; float: right;">📅 ${f.d}</span><p style="margin-top: 8px; font-size: 14px; color: var(--text-color);">${f.m}</p></div>`).join('');
             }
         };
 
         window.limparFeedbacks = function() {
             if(confirm("ATENÇÃO: Tem certeza que deseja apagar TODOS os feedbacks permanentemente?")) {
-                localStorage.removeItem('criasli_fbs');
-                window.renderizarFeedbacks();
+                localStorage.removeItem('criasli_fbs'); window.renderizarFeedbacks();
             }
         };
-        /* ========================================= */
 
         window.toggleFullscreen = function() {
             if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(e => {}); } 
@@ -392,19 +402,18 @@
             window.fecharModal('modal-config');
         };
 
-        window.onload = function() { try { window.carregarConfigs(); } catch(e) { console.error(e); } };
+        window.onload = function() { try { window.carregarConfigs(); } catch(e) {} };
 
-        window.timerVal = 0;
-        window.timerInt = null;
-        window.timerStart = function() { 
-            if (!window.timerInt) { window.timerInt = setInterval(() => { window.timerVal++; let m = Math.floor(window.timerVal / 60).toString().padStart(2, '0'); let s = (window.timerVal % 60).toString().padStart(2, '0'); document.getElementById('tempo-display').innerText = `${m}:${s}`; }, 1000); } 
-        };
+        window.timerVal = 0; window.timerInt = null;
+        window.timerStart = function() { if (!window.timerInt) { window.timerInt = setInterval(() => { window.timerVal++; let m = Math.floor(window.timerVal / 60).toString().padStart(2, '0'); let s = (window.timerVal % 60).toString().padStart(2, '0'); document.getElementById('tempo-display').innerText = `${m}:${s}`; }, 1000); } };
         window.timerPause = function() { clearInterval(window.timerInt); window.timerInt = null; };
         window.timerReset = function() { window.timerPause(); window.timerVal = 0; document.getElementById('tempo-display').innerText = "00:00"; };
 
         window.addMsg = function(txt, tipo, id=null) {
             const d = document.createElement('div'); d.className = `message ${tipo}`;
-            if(id) d.id = id; d.innerHTML = txt; document.getElementById('chat-messages').appendChild(d); document.getElementById('chat-messages').scrollTop = 99999;
+            if(id) d.id = id; d.innerHTML = txt;
+            document.getElementById('chat-messages').appendChild(d);
+            document.getElementById('chat-messages').scrollTop = 99999;
         };
         window.limparChat = function() { document.getElementById('chat-messages').innerHTML = ""; window.lastCode = ""; window.addMsg("Lixeira limpa! Pode começar o próximo trabalho.", "ai"); };
 
@@ -431,9 +440,7 @@
                 if(tr==="slide") an = "@keyframes a {from{transform:translateY(50px); opacity:0;} to{transform:translateY(0); opacity:1;}} section > * { animation: a 0.8s ease-out; }";
                 if(tr==="zoom") an = "@keyframes a {from{transform:scale(0.8); opacity:0;} to{transform:scale(1); opacity:1;}} section > * { animation: a 0.8s ease-out; }";
 
-                const rImg = img !== "" 
-                    ? `OBRIGATÓRIO usar esta imagem customizada: <img src="${img}" style="max-width:80%; border-radius:10px;">` 
-                    : `NUNCA USE IMGUR. Para imagens use APENAS a tag: <img src="https://image.pollinations.ai/prompt/KEYWORDS?nologo=true" style="max-width:80%; border-radius:10px;"> onde KEYWORDS são termos em inglês.`;
+                const rImg = img !== "" ? `OBRIGATÓRIO usar esta imagem customizada: <img src="${img}" style="max-width:80%; border-radius:10px;">` : `NUNCA USE IMGUR. Para imagens use APENAS: <img src="https://image.pollinations.ai/prompt/KEYWORDS?nologo=true" style="max-width:80%; border-radius:10px;"> onde KEYWORDS são termos em inglês.`;
 
                 const sys = `Crie HTML <!DOCTYPE html> de apresentação. 
                 Regras: 1. ${count} seções <section class="slide"> com CSS min-height:100vh; aspect-ratio:${asp}; justify-content:center; align-items:center; text-align:center; padding:40px; page-break-after:always; display:flex; flex-direction:column;. 
@@ -483,9 +490,7 @@
             const frame = document.getElementById('preview-frame'); const aspect = document.getElementById('aspect-ratio').value; const format = aspect === "16/9" ? [1920, 1080] : [1440, 1080];
             html2pdf().set({ margin:0, filename:'CRIASLI_Apresentacao.pdf', jsPDF:{unit:'px', format:format, orientation:'landscape'} }).from(frame.contentWindow.document.body).save();
         };
-        window.baixarHTML = function() { 
-            const a = document.createElement("a"); a.href = window.lastSlideUrl; a.download = "CRIASLI_Apresentacao.html"; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        };
+        window.baixarHTML = function() { const a = document.createElement("a"); a.href = window.lastSlideUrl; a.download = "CRIASLI_Apresentacao.html"; document.body.appendChild(a); a.click(); document.body.removeChild(a); };
         window.copiarCodigoDireto = function() { navigator.clipboard.writeText(window.lastCode); alert("Código HTML Copiado com Sucesso!"); };
 
         window.fecharJogos = function() { clearInterval(window.loopS); window.fecharModal('modal-jogos'); };
@@ -510,17 +515,33 @@
             }, 100);
         };
 
+        // TIC TAC TOE VS AI
         window.initTicTacToe = function() {
-            let tB = ["","","","","","","","",""], tP = "X", tA = true; document.getElementById("ttt-status").innerText = "Vez do Jogador: X";
+            let tB = ["","","","","","","","",""], tP = "X", tA = true; document.getElementById("ttt-status").innerText = "Sua Vez: X";
             const g = document.getElementById("ttt-grid"); g.innerHTML = "";
+            const checkWin = (board, p) => { const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return w.some(v => board[v[0]]===p && board[v[1]]===p && board[v[2]]===p); };
+            const aiMove = () => {
+                if(!tA) return;
+                let empty = []; tB.forEach((v,i) => { if(v==="") empty.push(i); });
+                if(empty.length === 0) return;
+                let move = -1;
+                for(let i of empty) { tB[i]="O"; if(checkWin(tB, "O")) move=i; tB[i]=""; }
+                if(move===-1) { for(let i of empty) { tB[i]="X"; if(checkWin(tB, "X")) move=i; tB[i]=""; } }
+                if(move===-1) move = empty[Math.floor(Math.random()*empty.length)];
+                tB[move] = "O"; let cells = g.children; cells[move].innerText = "O"; cells[move].style.color = "#dc3545";
+                if(checkWin(tB, "O")) { document.getElementById("ttt-status").innerText = "A IA Venceu! 🤖"; tA = false; return; }
+                if(!tB.includes("")) { document.getElementById("ttt-status").innerText = "Deu Velha! 👵"; tA = false; return; }
+                tP = "X"; document.getElementById("ttt-status").innerText = "Sua Vez: X";
+            };
             for(let i=0; i<9; i++) {
                 const c = document.createElement("div"); c.style.cssText = "width:80px; height:80px; background:var(--input-bg); border:2px solid var(--glass-border); display:flex; justify-content:center; align-items:center; font-size:36px; cursor:pointer;";
                 c.onclick = () => {
-                    if(tB[i] != "" || !tA) return; tB[i] = tP; c.innerText = tP; c.style.color = tP==="X"?"#dc3545":"#198754";
-                    const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-                    if(w.some(v => tB[v[0]]!=="" && tB[v[0]]===tB[v[1]] && tB[v[1]]===tB[v[2]])) { document.getElementById("ttt-status").innerText = `Vitória do ${tP}! 🎉`; tA = false; return; }
+                    if(tB[i] !== "" || !tA || tP !== "X") return;
+                    tB[i] = "X"; c.innerText = "X"; c.style.color = "#198754";
+                    if(checkWin(tB, "X")) { document.getElementById("ttt-status").innerText = "Você Venceu! 🎉"; tA = false; return; }
                     if(!tB.includes("")) { document.getElementById("ttt-status").innerText = "Deu Velha! 👵"; tA = false; return; }
-                    tP = tP === "X" ? "O" : "X"; document.getElementById("ttt-status").innerText = `Vez: ${tP}`;
+                    tP = "O"; document.getElementById("ttt-status").innerText = "IA Pensando... 🤔";
+                    setTimeout(aiMove, 500);
                 }; g.appendChild(c);
             }
         };
@@ -577,38 +598,53 @@
             ens = []; bls = []; rlPausado = false; document.getElementById('rl-level-up').style.display = 'none';
             if(rlLoop) cancelAnimationFrame(rlLoop); rlLoop = requestAnimationFrame(window.rlUpdate);
         };
+
         window.fecharRoguelike = function() { rlPausado = true; document.getElementById('game-roguelike').style.display = 'none'; if(document.exitFullscreen) document.exitFullscreen().catch(()=>{}); };
 
         window.rlUpdate = function() {
             if(rlPausado) return;
             if((rlK['w']||rlK['arrowup']) && pl.y>0) pl.y-=pl.spd; if((rlK['s']||rlK['arrowdown']) && pl.y<cv.height) pl.y+=pl.spd;
             if((rlK['a']||rlK['arrowleft']) && pl.x>0) pl.x-=pl.spd; if((rlK['d']||rlK['arrowright']) && pl.x<cv.width) pl.x+=pl.spd;
+
             if(pl.hp < pl.mx && pl.regen > 0 && Math.random() < 0.05) pl.hp = Math.min(pl.mx, pl.hp + pl.regen);
+
             if(Math.random() < 0.02 + (pl.lvl*0.003)) {
                 let s=Math.floor(Math.random()*4), ex=s===0?0:s===1?cv.width:Math.random()*cv.width, ey=s===2?0:s===3?cv.height:Math.random()*cv.height;
                 ens.push({ x:ex, y:ey, s: 15 + (Math.random()*10), hp: 20+(pl.lvl*8), spd: 1+(pl.lvl*0.05) });
             }
-            ens.forEach(e => { let d_x=pl.x-e.x, d_y=pl.y-e.y, dist=Math.hypot(d_x,d_y); e.x+=(d_x/dist)*e.spd; e.y+=(d_y/dist)*e.spd; if(dist < pl.s/2 + e.s/2) pl.hp -= 0.5 + (pl.lvl*0.1); });
+
+            ens.forEach(e => {
+                let d_x=pl.x-e.x, d_y=pl.y-e.y, dist=Math.hypot(d_x,d_y); e.x+=(d_x/dist)*e.spd; e.y+=(d_y/dist)*e.spd;
+                if(dist < pl.s/2 + e.s/2) pl.hp -= 0.5 + (pl.lvl*0.1); 
+            });
+
             pl.t++;
             if(pl.t >= pl.fr && ens.length > 0) {
                 pl.t = 0; let trg = ens.reduce((a,b) => Math.hypot(pl.x-a.x, pl.y-a.y) < Math.hypot(pl.x-b.x, pl.y-b.y) ? a : b);
                 let d_x=trg.x-pl.x, d_y=trg.y-pl.y, dist=Math.hypot(d_x,d_y);
                 for(let q=0; q<pl.spr; q++) { let off = (Math.random() - 0.5) * 0.5; bls.push({ x:pl.x, y:pl.y, vx:((d_x/dist)+off)*12, vy:((d_y/dist)+off)*12, s:pl.bs, l:80, p: pl.p }); }
             }
+
             for(let i=bls.length-1; i>=0; i--) {
                 let b=bls[i]; b.x+=b.vx; b.y+=b.vy; b.l--; if(b.l<=0) { bls.splice(i,1); continue; }
                 for(let j=ens.length-1; j>=0; j--) {
                     let e=ens[j];
                     if(Math.hypot(b.x-e.x, b.y-e.y) < e.s+b.s) {
-                        let danoFinal = pl.atk; if(Math.random() < pl.cC) danoFinal *= pl.cM;
-                        e.hp -= danoFinal; b.p--; if(b.p <= 0) bls.splice(i,1);
+                        let danoFinal = pl.atk; if(Math.random() < pl.cC) danoFinal *= pl.cM; e.hp -= danoFinal; 
+                        b.p--; if(b.p <= 0) bls.splice(i,1);
                         if(e.hp<=0) { ens.splice(j,1); pl.xp += 5 * pl.xm; pl.hp = Math.min(pl.mx, pl.hp + pl.ls); if(pl.xp >= pl.nxp) window.rlLevelUp(); }
                         break;
                     }
                 }
             }
             if(pl.hp<=0) { alert("Game Over! Você sobreviveu até o Nível " + pl.lvl); window.fecharRoguelike(); return; }
-            ct.fillStyle='#111'; ct.fillRect(0,0,cv.width,cv.height); ct.fillStyle='#ffc107'; bls.forEach(b=>{ct.beginPath();ct.arc(b.x,b.y,b.s,0,Math.PI*2);ct.fill();}); ct.fillStyle='#dc3545'; ens.forEach(e=>{ct.beginPath();ct.arc(e.x,e.y,e.s,0,Math.PI*2);ct.fill();}); ct.fillStyle='#0d6efd'; ct.fillRect(pl.x-pl.s/2, pl.y-pl.s/2, pl.s, pl.s); ct.fillStyle='red'; ct.fillRect(pl.x-15, pl.y-25, 30, 5); ct.fillStyle='#28a745'; ct.fillRect(pl.x-15, pl.y-25, 30*(pl.hp/pl.mx), 5);
+
+            ct.fillStyle='#111'; ct.fillRect(0,0,cv.width,cv.height);
+            ct.fillStyle='#ffc107'; bls.forEach(b=>{ct.beginPath();ct.arc(b.x,b.y,b.s,0,Math.PI*2);ct.fill();});
+            ct.fillStyle='#dc3545'; ens.forEach(e=>{ct.beginPath();ct.arc(e.x,e.y,e.s,0,Math.PI*2);ct.fill();});
+            ct.fillStyle='#0d6efd'; ct.fillRect(pl.x-pl.s/2, pl.y-pl.s/2, pl.s, pl.s);
+            ct.fillStyle='red'; ct.fillRect(pl.x-15, pl.y-25, 30, 5); ct.fillStyle='#28a745'; ct.fillRect(pl.x-15, pl.y-25, 30*(pl.hp/pl.mx), 5);
+            
             document.getElementById('rl-lvl').innerText = pl.lvl; document.getElementById('rl-xp').innerText = Math.floor(pl.xp); document.getElementById('rl-next').innerText = pl.nxp; document.getElementById('rl-hp').innerText = Math.floor(pl.hp);
             rlLoop = requestAnimationFrame(window.rlUpdate);
         };
@@ -623,13 +659,13 @@
                 {n: "Anel Cobre (HP Máx)", f: (m)=>{ pl.mx += 10*m; pl.hp += 10*m; }}, {n: "Anel Prata (HP Máx)", f: (m)=>{ pl.mx += 25*m; pl.hp += 25*m; }}, {n: "Anel Ouro (HP Máx)", f: (m)=>{ pl.mx += 50*m; pl.hp += 50*m; }}, {n: "Coração Troll (HP Máx)", f: (m)=>{ pl.mx += 100*m; pl.hp += 100*m; }}, {n: "Coração Dragão (HP MAX)", f: (m)=>{ pl.mx += 200*m; pl.hp += 200*m; }},
                 {n: "Mirtilo (Cura)", f: (m)=>{ pl.hp = Math.min(pl.mx, pl.hp + (pl.mx * 0.1 * m)); }}, {n: "Maçã (Cura)", f: (m)=>{ pl.hp = Math.min(pl.mx, pl.hp + (pl.mx * 0.25 * m)); }}, {n: "Poção P (Cura)", f: (m)=>{ pl.hp = Math.min(pl.mx, pl.hp + (pl.mx * 0.35 * m)); }}, {n: "Poção M (Cura)", f: (m)=>{ pl.hp = Math.min(pl.mx, pl.hp + (pl.mx * 0.5 * m)); }}, {n: "Poção G (Cura)", f: (m)=>{ pl.hp = Math.min(pl.mx, pl.hp + (pl.mx * 0.75 * m)); }}, {n: "Elixir (Cura Total)", f: (m)=>{ pl.hp = pl.mx; }},
                 {n: "Meia Furada (Velocidade)", f: (m)=>{ pl.spd += 0.1*m; }}, {n: "Sapatos (Velocidade)", f: (m)=>{ pl.spd += 0.2*m; }}, {n: "Botas Leves (Velocidade)", f: (m)=>{ pl.spd += 0.5*m; }}, {n: "Passo Sombrio (Velocidade)", f: (m)=>{ pl.spd += 1.0*m; }}, {n: "Botas Hermes (Vel. MAX)", f: (m)=>{ pl.spd += 2.0*m; }},
-                {n: "Gota de Sangue (Vampirismo)", f: (m)=>{ pl.ls += 0.2*m; }}, {n: "Dente Quebrado (Vampirismo)", f: (m)=>{ pl.ls += 0.3*m; }}, {n: "Dente Morcego (Vampirismo)", f: (m)=>{ pl.ls += 0.5*m; }}, {n: "Presa (Vampirismo)", f: (m)=>{ pl.ls += 1.2*m; }}, {n: "Capa Drácula (Vampirismo)", f: (m)=>{ pl.ls += 2.5*m; }}, {n: "Pacto Sangue (Vampirismo MAX)", f: (m)=>{ pl.ls += 5.0*m; }},
-                {n: "Poeira (Tamanho Bala)", f: (m)=>{ pl.bs += 0.2*m; }}, {n: "Pedrinha (Tamanho Bala)", f: (m)=>{ pl.bs += 0.5*m; }}, {n: "Pedra (Tamanho Bala)", f: (m)=>{ pl.bs += 1.0*m; }}, {n: "Rocha (Tamanho Bala)", f: (m)=>{ pl.bs += 2.5*m; }}, {n: "Bala Canhão (Tamanho Bala)", f: (m)=>{ pl.bs += 5.0*m; }}, {n: "Meteoro (Tam. MAX)", f: (m)=>{ pl.bs += 10.0*m; }},
-                {n: "Agulha (Perfurante)", f: (m)=>{ pl.p += Math.ceil(0.5*m); }}, {n: "Prego (Perfurante)", f: (m)=>{ pl.p += Math.ceil(1.0*m); }}, {n: "Flecha (Perfurante)", f: (m)=>{ pl.p += Math.ceil(2.0*m); }}, {n: "Lança (Perfurante)", f: (m)=>{ pl.p += Math.ceil(4.0*m); }}, {n: "Raio (Perfurante MAX)", f: (m)=>{ pl.p += Math.ceil(10.0*m); }},
+                {n: "Gota Sangue (Vampirismo)", f: (m)=>{ pl.ls += 0.2*m; }}, {n: "Dente Quebrado (Vamp)", f: (m)=>{ pl.ls += 0.3*m; }}, {n: "Dente Morcego (Vamp)", f: (m)=>{ pl.ls += 0.5*m; }}, {n: "Presa (Vampirismo)", f: (m)=>{ pl.ls += 1.2*m; }}, {n: "Capa Drácula (Vamp)", f: (m)=>{ pl.ls += 2.5*m; }}, {n: "Pacto Sangue (Vamp MAX)", f: (m)=>{ pl.ls += 5.0*m; }},
+                {n: "Poeira (Tamanho Bala)", f: (m)=>{ pl.bs += 0.2*m; }}, {n: "Pedrinha (Tamanho Bala)", f: (m)=>{ pl.bs += 0.5*m; }}, {n: "Pedra (Tamanho Bala)", f: (m)=>{ pl.bs += 1.0*m; }}, {n: "Rocha (Tamanho Bala)", f: (m)=>{ pl.bs += 2.5*m; }}, {n: "Bala Canhão (Tamanho)", f: (m)=>{ pl.bs += 5.0*m; }}, {n: "Meteoro (Tamanho MAX)", f: (m)=>{ pl.bs += 10.0*m; }},
+                {n: "Agulha (Perfurante)", f: (m)=>{ pl.p += Math.ceil(0.5*m); }}, {n: "Prego (Perfurante)", f: (m)=>{ pl.p += Math.ceil(1.0*m); }}, {n: "Flecha (Perfurante)", f: (m)=>{ pl.p += Math.ceil(2.0*m); }}, {n: "Lança (Perfurante)", f: (m)=>{ pl.p += Math.ceil(4.0*m); }}, {n: "Raio Sagrado (Perf MAX)", f: (m)=>{ pl.p += Math.ceil(10.0*m); }},
                 {n: "Anotações (XP Ganho)", f: (m)=>{ pl.xm += 0.05*m; }}, {n: "Página Velha (XP Ganho)", f: (m)=>{ pl.xm += 0.1*m; }}, {n: "Caderno (XP Ganho)", f: (m)=>{ pl.xm += 0.2*m; }}, {n: "Enciclopédia (XP Ganho)", f: (m)=>{ pl.xm += 0.5*m; }}, {n: "Grimório (XP Ganho)", f: (m)=>{ pl.xm += 1.0*m; }}, {n: "Mente Divina (XP MAX)", f: (m)=>{ pl.xm += 2.5*m; }},
-                {n: "Band-aid (Regeneração)", f: (m)=>{ pl.regen += 0.05*m; }}, {n: "Gaze (Regeneração)", f: (m)=>{ pl.regen += 0.1*m; }}, {n: "Curativo (Regeneração)", f: (m)=>{ pl.regen += 0.25*m; }}, {n: "Anel Vital (Regeneração)", f: (m)=>{ pl.regen += 0.5*m; }}, {n: "Imortalidade (Regen MAX)", f: (m)=>{ pl.regen += 1.5*m; }},
-                {n: "Lente Quebrada (Crit Chance)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.02*m); }}, {n: "Mira Laser (Crit Chance)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.1*m); }}, {n: "Olho Assassino (Crit MAX)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.3*m); }},
-                {n: "Golpe Baixo (Dano Crit)", f: (m)=>{ pl.cM += 0.3*m; }}, {n: "Fatalidade (Dano Crit)", f: (m)=>{ pl.cM += 1.5*m; }}, {n: "Aniquilador (Dano Crit MAX)", f: (m)=>{ pl.cM += 4.0*m; }},
+                {n: "Band-aid (Regen)", f: (m)=>{ pl.regen += 0.05*m; }}, {n: "Gaze (Regen)", f: (m)=>{ pl.regen += 0.1*m; }}, {n: "Curativo (Regen)", f: (m)=>{ pl.regen += 0.25*m; }}, {n: "Anel Vital (Regen)", f: (m)=>{ pl.regen += 0.5*m; }}, {n: "Imortalidade (Regen MAX)", f: (m)=>{ pl.regen += 1.5*m; }},
+                {n: "Lente Quebrada (Crit)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.02*m); }}, {n: "Mira Laser (Crit)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.1*m); }}, {n: "Olho Assassino (Crit MAX)", f: (m)=>{ pl.cC = Math.min(1, pl.cC + 0.3*m); }},
+                {n: "Golpe Baixo (Dano Crit)", f: (m)=>{ pl.cM += 0.3*m; }}, {n: "Fatalidade (Dano Crit)", f: (m)=>{ pl.cM += 1.5*m; }}, {n: "Aniquilador (Dano Crit)", f: (m)=>{ pl.cM += 4.0*m; }},
                 {n: "Cano Duplo (Spread)", f: (m)=>{ pl.spr += Math.ceil(0.5*m); }}, {n: "Espingarda (Spread)", f: (m)=>{ pl.spr += Math.ceil(1.0*m); }}, {n: "Chuva Balas (Spread)", f: (m)=>{ pl.spr += Math.ceil(2.0*m); }}
             ];
             let choices = [];
